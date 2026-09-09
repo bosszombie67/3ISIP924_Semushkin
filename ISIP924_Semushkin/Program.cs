@@ -11,10 +11,11 @@ namespace ISIP924_Semushkin
         static void Main(string[] args)
         {
             
-            int choice = 0, count = 0;
+            int choice = 0, count = 0, choice2 = 0;
             string trata;
             Console.WriteLine("Введите количество операций, которые будут записаны:");
             count = int.Parse(Console.ReadLine());
+            Console.Clear();
             if (count < 2 && count > 40)
             {
                 Console.WriteLine("Вы ввели либо меньше двух, либо больше сорока операций");
@@ -23,14 +24,19 @@ namespace ISIP924_Semushkin
             {
                 for (int i = 1; i <= count; i++)
                 {
-                    Console.WriteLine("Введите ваши траты в рублях, в формате(Название услуги или товара; Количество денег):");
+                    Console.WriteLine($"Операция номер {i}");
+                    Console.WriteLine("Введите вашу трату, в формате(Название услуги или товара; Количество денег(рубли):");
+                    Console.WriteLine("Пример: Влажные салфетки \"Лента\"; 235");
                     trata = Console.ReadLine();
+                    Console.Clear();
+                    Console.WriteLine("---------------------------------Меню----------------------------------");
                     Console.WriteLine("1. Вывод данных");
                     Console.WriteLine("2. Статистика (среднее, максимальное, минимальное, сумма)");
                     Console.WriteLine("3. Сортировка по цене (пузырьковая сортировка)");
                     Console.WriteLine("4. Конвертация валюты (пользователь вводит курс или выбирает из списка)");
                     Console.WriteLine("5. Поиск по названию ");
                     Console.WriteLine("0. Выход");
+                    Console.WriteLine("-----------------------------------------------------------------------");
                     Console.WriteLine("Ваш выбор операции:");
                     choice = int.Parse(Console.ReadLine());
                     switch (choice)
@@ -38,6 +44,22 @@ namespace ISIP924_Semushkin
                         case 1:
                             break;
                         case 2:
+                            Console.Clear();
+                            Console.WriteLine("Введите какая вам нужна статистика(1 - среднее, 2 - максимальное, 3 - минимальное, 4 - сумма):");
+                            choice2 = int.Parse(Console.ReadLine());
+                            switch (choice2)
+                            {
+                                case 1:
+                                    break;
+                                case 2:
+                                    break;
+                                case 3:
+                                    break;
+                                case 4:
+                                    break;
+                                default:
+                                    break;
+                            }
                             break;
                         case 3:
                             break;
@@ -46,7 +68,7 @@ namespace ISIP924_Semushkin
                         case 5:
                             break;
                         case 0:
-                            break;
+                            return;
                         default:
                             break;
                     }
