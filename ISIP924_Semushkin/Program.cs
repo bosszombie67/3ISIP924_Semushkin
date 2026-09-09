@@ -9,12 +9,12 @@ namespace ISIP924_Semushkin
     internal class Program
     {
         static void Main(string[] args)
-        {
-            
-            int choice = 0, count = 0, choice2 = 0;
+        {            
+            int choice = 7, count = 0, choice2 = 0, price = 0;
             string trata;
             Console.WriteLine("Введите количество операций, которые будут записаны:");
             count = int.Parse(Console.ReadLine());
+            List<(string Name, decimal Amount)> Expense = new List<(string Name, decimal Amount)>(count);
             Console.Clear();
             if (count < 2 && count > 40)
             {
@@ -24,11 +24,17 @@ namespace ISIP924_Semushkin
             {
                 for (int i = 1; i <= count; i++)
                 {
-                    Console.WriteLine($"Операция номер {i}");
-                    Console.WriteLine("Введите вашу трату, в формате(Название услуги или товара; Количество денег(рубли):");
+                    Console.WriteLine($"Операция номер {i} из {count}");
                     Console.WriteLine("Пример: Влажные салфетки \"Лента\"; 235");
+                    Console.WriteLine("Введите название покупки/услуги:");
                     trata = Console.ReadLine();
+                    Console.WriteLine("Введите цену покупки/услуги:");
+                    price = int.Parse(Console.ReadLine());
+                    Expense.Add((trata, price));
                     Console.Clear();
+                }
+                while (choice != 0)
+                {
                     Console.WriteLine("---------------------------------Меню----------------------------------");
                     Console.WriteLine("1. Вывод данных");
                     Console.WriteLine("2. Статистика (среднее, максимальное, минимальное, сумма)");
@@ -42,6 +48,12 @@ namespace ISIP924_Semushkin
                     switch (choice)
                     {
                         case 1:
+                            Console.Clear();
+                            Console.WriteLine("Список всех трат(покупок и услуг):");
+                            foreach (var golda in Expense)
+                            {
+                                Console.WriteLine(golda);
+                            }
                             break;
                         case 2:
                             Console.Clear();
