@@ -104,7 +104,27 @@ namespace ISIP924_Semushkin
                             Console.Clear();
                             break;
                         case 4:
-
+                            Console.Clear();
+                            Console.Write("Введите курс валюты - стоимость одной валюты в рублях: ");
+                            decimal ERate = decimal.Parse(Console.ReadLine());
+                            if (ERate <= 0)
+                            {
+                                Console.Write("Введите нормальный курс валюты");
+                            }
+                            Console.Write("Введите название валюты(например, USD): ");
+                            string CName = Console.ReadLine();
+                            foreach(var e in Expense)
+                            {
+                                decimal Converted = e.Amount / ERate;
+                                Console.WriteLine($"{e.Name} - {Converted} - {CName:F2}");
+                            }
+                            int choice4 = 1;
+                            while(choice4 != 0)
+                            {
+                                Console.Write("Введите 0, чтобы вернуться в меню: ");
+                                choice4 = int.Parse(Console.ReadLine());
+                            }
+                            Console.Clear();
                             break;
                         case 5:
 
