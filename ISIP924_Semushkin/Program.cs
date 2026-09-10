@@ -10,7 +10,7 @@ namespace ISIP924_Semushkin
     {
         static void Main(string[] args)
         {            
-            int choice = 7, count = 0, choice2 = 0, price = 0;
+            int choice = 7, count = 0, price = 0;
             string trata;
             Console.WriteLine("Введите количество операций, которые будут записаны:");
             count = int.Parse(Console.ReadLine());
@@ -48,40 +48,72 @@ namespace ISIP924_Semushkin
                     switch (choice)
                     {
                         case 1:
+                            int choice1 = 1;
                             Console.Clear();
                             Console.WriteLine("Список всех трат(покупок и услуг):");
-                            foreach (var golda in Expense)
+                            while (choice1 != 0)
                             {
-                                Console.WriteLine(golda);
+                                foreach (var golda in Expense)
+                                {
+                                    Console.WriteLine(golda);
+                                }
+                                Console.Write("Введите 0, чтобы вернуться в меню: ");
+                                choice1 = int.Parse(Console.ReadLine());
                             }
+                            Console.Clear();
                             break;
                         case 2:
                             Console.Clear();
-                            Console.WriteLine("Введите какая вам нужна статистика(1 - среднее, 2 - максимальное, 3 - минимальное, 4 - сумма):");
-                            choice2 = int.Parse(Console.ReadLine());
-                            switch (choice2)
+                            int choice2 = 1;
+                            while (choice2 != 0)
                             {
-                                case 1:
-                                    break;
-                                case 2:
-                                    break;
-                                case 3:
-                                    break;
-                                case 4:
-                                    break;
-                                default:
-                                    break;
+                                Console.WriteLine("Средняя цена покупок/услуг: ", Expense.OfType<int>().Average());
+                                Console.WriteLine("Максимальная цена покупок/услуг: ", Expense.OfType<int>().Max());
+                                Console.WriteLine("Минимальная цена покупок/услуг: ", Expense.OfType<int>().Min());
+                                Console.WriteLine("Сумма цены всех покупок/услуг:", Expense.OfType<int>().Sum());
+                                Console.Write("Введите 0, чтобы вернуться в меню: ");
+                                choice2 = int.Parse(Console.ReadLine());
                             }
+                            Console.Clear();
                             break;
                         case 3:
+                            Console.Clear();
+                            bool swapped;
+                            for (int i = 0; i < Expense.Count() - 1; i++)
+                            {
+                                swapped = false;
+                                for (int j = 0; j < Expense.Count() - i - 1; j++)
+                                {
+                                    if (Expense[j].Amount > Expense[j + 1].Amount)
+                                    {
+                                        var temp = Expense[j];
+                                        Expense[j] = Expense[j + 1];
+                                        Expense[j + 1] = temp;
+                                        swapped = true;
+                                    }
+                                }
+                                if (!swapped) break;
+                            }
+                            int choice3 = 1;
+                            while (choice3 != 0)
+                            {
+                                Console.WriteLine("Все траты успешно отсортированы по цене пузырьковой сортировкой");
+                                Console.Write("Введите 0, чтобы вернуться в меню: ");
+                                choice3 = int.Parse(Console.ReadLine());
+                            }
+                            Console.Clear();
                             break;
                         case 4:
+
                             break;
                         case 5:
+
                             break;
                         case 0:
                             return;
                         default:
+                            Console.WriteLine("Введите корректное число");
+                            Console.Clear();
                             break;
                     }
                 }
