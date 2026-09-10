@@ -16,14 +16,11 @@ namespace ISIP924_Semushkin
             count = int.Parse(Console.ReadLine());
             List<(string Name, decimal Amount)> Expense = new List<(string Name, decimal Amount)>(count);
             Console.Clear();
-            if (count < 2 && count > 40)
-            {
+            if (count < 2 || count > 40){
                 Console.WriteLine("Вы ввели либо меньше двух, либо больше сорока операций");
             }
-            else
-            {
-                for (int i = 1; i <= count; i++)
-                {
+            else {
+                for (int i = 1; i <= count; i++){
                     Console.WriteLine($"Операция номер {i} из {count}");
                     Console.WriteLine("Пример: Влажные салфетки \"Лента\"; 235");
                     Console.WriteLine("Введите название покупки/услуги:");
@@ -33,8 +30,7 @@ namespace ISIP924_Semushkin
                     Expense.Add((trata, price));
                     Console.Clear();
                 }
-                while (choice != 0)
-                {
+                while (choice != 0){
                     Console.WriteLine("---------------------------------Меню----------------------------------");
                     Console.WriteLine("1. Вывод данных");
                     Console.WriteLine("2. Статистика (среднее, максимальное, минимальное, сумма)");
@@ -45,16 +41,13 @@ namespace ISIP924_Semushkin
                     Console.WriteLine("-----------------------------------------------------------------------");
                     Console.WriteLine("Ваш выбор операции:");
                     choice = int.Parse(Console.ReadLine());
-                    switch (choice)
-                    {
+                    switch (choice){
                         case 1:
                             int choice1 = 1;
                             Console.Clear();
                             Console.WriteLine("Список всех трат(покупок и услуг):");
-                            while (choice1 != 0)
-                            {
-                                foreach (var golda in Expense)
-                                {
+                            while (choice1 != 0){
+                                foreach (var golda in Expense){
                                     Console.WriteLine(golda);
                                 }
                                 Console.Write("Введите 0, чтобы вернуться в меню: ");
@@ -65,12 +58,11 @@ namespace ISIP924_Semushkin
                         case 2:
                             Console.Clear();
                             int choice2 = 1;
-                            while (choice2 != 0)
-                            {
-                                Console.WriteLine("Средняя цена покупок/услуг: ", Expense.OfType<int>().Average());
-                                Console.WriteLine("Максимальная цена покупок/услуг: ", Expense.OfType<int>().Max());
-                                Console.WriteLine("Минимальная цена покупок/услуг: ", Expense.OfType<int>().Min());
-                                Console.WriteLine("Сумма цены всех покупок/услуг:", Expense.OfType<int>().Sum());
+                            while (choice2 != 0){
+                                Console.WriteLine($"Средняя цена покупок/услуг: {Expense.Average(e => e.Amount):F2} руб.");
+                                Console.WriteLine($"Максимальная цена покупок/услуг: {Expense.Max(e => e.Amount):F2} руб.");
+                                Console.WriteLine($"Минимальная цена покупок/услуг: {Expense.Min(e => e.Amount):F2} руб.");
+                                Console.WriteLine($"Сумма цены всех покупок/услуг: {Expense.Sum(e => e.Amount):F2} руб.");
                                 Console.Write("Введите 0, чтобы вернуться в меню: ");
                                 choice2 = int.Parse(Console.ReadLine());
                             }
@@ -79,13 +71,10 @@ namespace ISIP924_Semushkin
                         case 3:
                             Console.Clear();
                             bool swapped;
-                            for (int i = 0; i < Expense.Count() - 1; i++)
-                            {
+                            for (int i = 0; i < Expense.Count() - 1; i++){
                                 swapped = false;
-                                for (int j = 0; j < Expense.Count() - i - 1; j++)
-                                {
-                                    if (Expense[j].Amount > Expense[j + 1].Amount)
-                                    {
+                                for (int j = 0; j < Expense.Count() - i - 1; j++){
+                                    if (Expense[j].Amount > Expense[j + 1].Amount){
                                         var temp = Expense[j];
                                         Expense[j] = Expense[j + 1];
                                         Expense[j + 1] = temp;
@@ -95,8 +84,7 @@ namespace ISIP924_Semushkin
                                 if (!swapped) break;
                             }
                             int choice3 = 1;
-                            while (choice3 != 0)
-                            {
+                            while (choice3 != 0) {
                                 Console.WriteLine("Все траты успешно отсортированы по цене пузырьковой сортировкой");
                                 Console.Write("Введите 0, чтобы вернуться в меню: ");
                                 choice3 = int.Parse(Console.ReadLine());
@@ -107,27 +95,43 @@ namespace ISIP924_Semushkin
                             Console.Clear();
                             Console.Write("Введите курс валюты - стоимость одной валюты в рублях: ");
                             decimal ERate = decimal.Parse(Console.ReadLine());
-                            if (ERate <= 0)
-                            {
+                            if (ERate <= 0) {
                                 Console.Write("Введите нормальный курс валюты");
                             }
                             Console.Write("Введите название валюты(например, USD): ");
                             string CName = Console.ReadLine();
-                            foreach(var e in Expense)
-                            {
+                            foreach (var e in Expense) {
                                 decimal Converted = e.Amount / ERate;
                                 Console.WriteLine($"{e.Name} - {Converted} - {CName:F2}");
                             }
                             int choice4 = 1;
-                            while(choice4 != 0)
-                            {
+                            while (choice4 != 0) {
                                 Console.Write("Введите 0, чтобы вернуться в меню: ");
                                 choice4 = int.Parse(Console.ReadLine());
                             }
                             Console.Clear();
                             break;
                         case 5:
-
+                            Console.Clear();
+                            Console.Write("Введите название покупки/услуги для поиска по имени:");
+                            string searchname = Console.ReadLine();
+                            bool f = false;
+                            int choice5 = 1;
+                            while (choice5 != 0){
+                                foreach (var e in Expense){
+                                    if (e.Name.ToLower().Contains(searchname))
+                                    {
+                                        Console.WriteLine($"{e.Name} - {e.Amount} руб.");
+                                        f = true;
+                                    }
+                                }
+                                if (!f){
+                                    Console.WriteLine("Ничего не найдено");
+                                }
+                                Console.Write("Введите 0, чтобы вернуться в меню: ");
+                                choice5 = int.Parse(Console.ReadLine());
+                            }
+                            Console.Clear();
                             break;
                         case 0:
                             return;
