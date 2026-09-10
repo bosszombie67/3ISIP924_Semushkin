@@ -104,7 +104,15 @@ namespace ISIP924_Semushkin
                             Console.Clear();
                             break;
                         case 4:
+                            Console.Clear();
+                            int choice4 = 1;
+                            while(choice4 != 0)
+                            {
 
+                                Console.Write("Введите 0, чтобы вернуться в меню: ");
+                                choice4 = int.Parse(Console.ReadLine());
+                            }
+                            Console.Clear();
                             break;
                         case 5:
 
