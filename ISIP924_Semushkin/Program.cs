@@ -57,6 +57,7 @@ namespace ISIP924_Semushkin
                         }
                     }
                     Console.WriteLine("Вы выбрали некорректную категорию");
+                    Console.Clear();
                 }
             }
             public static void DeleteGoods(List<Goods> Products)
@@ -71,188 +72,28 @@ namespace ISIP924_Semushkin
                         {
                             Products.RemoveAt(i);
                             Console.WriteLine("Товар удален.");
+                            Console.Clear();
                             return;
                         }
                     }
                 }
                 Console.WriteLine("Товар не найден.");
+            }
+            public static void SupplyGoods(List<Goods> Products)
+            {
+
             }
             public static void ShowGoods(List<Goods> Products)
             {
-                Console.Clear();
-                if (Products.Count == 0)
-                {
-                    Console.WriteLine("Список товаров пуст.");
-                    return;
-                }
-                foreach (Goods product in Products)
-                {
-                    Console.WriteLine($"Код: {product.uCode}");
-                    Console.WriteLine($"Название: {product.Name}");
-                    Console.WriteLine($"Цена: {product.Price}");
-                    Console.WriteLine($"Количество: {product.Quantity}");
-                    Console.WriteLine($"Категория: {product.Category}");
-                    Console.WriteLine($"В наличии: {(product.State ? "Да" : "Нет")}");
-                    Console.WriteLine();
-                }
-            }
-            public static void SupplyGoods(List <Goods> Products)
-            {
-                Console.Clear();
-                Console.Write("Введите код товара: ");
-                if (!int.TryParse(Console.ReadLine(), out int code))
-                {
-                    Console.WriteLine("Некорректный код.");
-                    return;
-                }
-                foreach (Goods product in Products)
-                {
-                    if (product.uCode == code)
-                    {
-                        Console.Write("Введите количество товара для поставки: ");
-                        if (int.TryParse(Console.ReadLine(), out int quantity) && quantity > 0)
-                        {
-                            product.Quantity += quantity;
 
-                            Console.WriteLine("Поставка выполнена.");
-                            Console.WriteLine($"Теперь на складе: {product.Quantity}");
-                        }
-                        else
-                        {
-                            Console.WriteLine("Некорректное количество.");
-                        }
-                        return;
-                    }
-                }
-                Console.WriteLine("Товар не найден.");
             }
             public static void FindGoods(List<Goods> Products)
             {
-                Console.Clear();
-                Console.WriteLine("Поиск товара:");
-                Console.WriteLine("1. По коду");
-                Console.WriteLine("2. По названию");
-                Console.WriteLine("3. По категории");
-                Console.Write("Выберите способ поиска: ");
-                if (!int.TryParse(Console.ReadLine(), out int choice))
-                {
-                    Console.WriteLine("Некорректный ввод.");
-                    return;
-                }
-                switch (choice)
-                {
-                    case 1:
-                        FindByCode(Products);
-                        break;
-                    case 2:
-                        FindByName(Products);
-                        break;
-                    case 3:
-                        FindByCategory(Products);
-                        break;
-                    default:
-                        Console.WriteLine("Такого варианта нет.");
-                        break;
-                }
-            }
-            private static void FindByCode(List<Goods> Products)
-            {
-                Console.Write("Введите код товара: ");
 
-                if (!int.TryParse(Console.ReadLine(), out int code))
-                {
-                    Console.WriteLine("Некорректный код.");
-                    return;
-                }
-                foreach (Goods product in Products)
-                {
-                    if (product.uCode == code)
-                    {
-                        ShowProduct(product);
-                        return;
-                    }
-                }
-                Console.WriteLine("Товар не найден.");
-            }
-            private static void FindByName(List<Goods> Products)
-            {
-                Console.Write("Введите название товара: ");
-                string name = Console.ReadLine();
-                bool found = false;
-                foreach (Goods product in Products)
-                {
-                    if (product.Name.ToLower().Contains(name.ToLower()))
-                    {
-                        ShowProduct(product);
-                        found = true;
-                    }
-                }
-                if (!found)
-                {
-                    Console.WriteLine("Товар не найден.");
-                }
-            }
-            private static void FindByCategory(List<Goods> Products)
-            {
-                Category category = ChooseCategory();
-                bool found = false;
-                foreach (Goods product in Products)
-                {
-                    if (product.Category == category)
-                    {
-                        ShowProduct(product);
-                        found = true;
-                    }
-                }
-                if (!found)
-                {
-                    Console.WriteLine("Товары данной категории не найдены.");
-                }
-            }
-            private static void ShowProduct(Goods product)
-            {
-                Console.WriteLine();
-                Console.WriteLine($"Код: {product.uCode}");
-                Console.WriteLine($"Название: {product.Name}");
-                Console.WriteLine($"Цена: {product.Price}");
-                Console.WriteLine($"Количество: {product.Quantity}");
-                Console.WriteLine($"На складе: {(product.State ? "Да" : "Нет")}");
-                Console.WriteLine($"Категория: {product.Category}");
-                Console.WriteLine();
             }
             public static void SellGoods(List<Goods> Products)
             {
-                Console.Clear();
-                Console.Write("Введите код товара: ");
-                if (!int.TryParse(Console.ReadLine(), out int code))
-                {
-                    Console.WriteLine("Некорректный код.");
-                    return;
-                }
-                foreach (Goods product in Products)
-                {
-                    if (product.uCode == code)
-                    {
-                        Console.WriteLine($"Товар: {product.Name}");
-                        Console.WriteLine($"На складе: {product.Quantity}");
-                        Console.Write("Введите количество товара для продажи: ");
-                        if (!int.TryParse(Console.ReadLine(), out int quantity) || quantity <= 0)
-                        {
-                            Console.WriteLine("Некорректное количество.");
-                            return;
-                        }
-                        if (quantity > product.Quantity)
-                        {
-                            Console.WriteLine("На складе недостаточно товара.");
-                            return;
-                        }
-                        product.Quantity -= quantity;
-                        Console.WriteLine("Товар успешно продан.");
-                        Console.WriteLine($"Осталось на складе: {product.Quantity}");
-                        return;
-                    }
-                }
-                Console.WriteLine("Товар не найден.");
+
             }
         }
         public enum Category
