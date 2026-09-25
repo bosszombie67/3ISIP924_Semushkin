@@ -41,7 +41,6 @@ namespace ISIP924_Semushkin
             }
             static Category ChooseCategory()
             {
-                Console.Clear();
                 while (true)
                 {
                     Console.WriteLine("Категории:");
@@ -223,7 +222,37 @@ namespace ISIP924_Semushkin
             }
             public static void SellGoods(List<Goods> Products)
             {
-
+                Console.Clear();
+                Console.Write("Введите код товара: ");
+                if (!int.TryParse(Console.ReadLine(), out int code))
+                {
+                    Console.WriteLine("Некорректный код.");
+                    return;
+                }
+                foreach (Goods product in Products)
+                {
+                    if (product.uCode == code)
+                    {
+                        Console.WriteLine($"Товар: {product.Name}");
+                        Console.WriteLine($"На складе: {product.Quantity}");
+                        Console.Write("Введите количество товара для продажи: ");
+                        if (!int.TryParse(Console.ReadLine(), out int quantity) || quantity <= 0)
+                        {
+                            Console.WriteLine("Некорректное количество.");
+                            return;
+                        }
+                        if (quantity > product.Quantity)
+                        {
+                            Console.WriteLine("На складе недостаточно товара.");
+                            return;
+                        }
+                        product.Quantity -= quantity;
+                        Console.WriteLine("Товар успешно продан.");
+                        Console.WriteLine($"Осталось на складе: {product.Quantity}");
+                        return;
+                    }
+                }
+                Console.WriteLine("Товар не найден.");
             }
         }
         public enum Category
@@ -233,7 +262,6 @@ namespace ISIP924_Semushkin
             Audio_Video_Equipment = 3,
             Consoles = 4
         }
-
         static void Main(string[] args)
         {
             List<Goods> Products = new List<Goods>();
