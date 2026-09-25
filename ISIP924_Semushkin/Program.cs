@@ -129,7 +129,97 @@ namespace ISIP924_Semushkin
             }
             public static void FindGoods(List<Goods> Products)
             {
+                Console.Clear();
+                Console.WriteLine("Поиск товара:");
+                Console.WriteLine("1. По коду");
+                Console.WriteLine("2. По названию");
+                Console.WriteLine("3. По категории");
+                Console.Write("Выберите способ поиска: ");
+                if (!int.TryParse(Console.ReadLine(), out int choice))
+                {
+                    Console.WriteLine("Некорректный ввод.");
+                    return;
+                }
+                switch (choice)
+                {
+                    case 1:
+                        FindByCode(Products);
+                        break;
+                    case 2:
+                        FindByName(Products);
+                        break;
+                    case 3:
+                        FindByCategory(Products);
+                        break;
+                    default:
+                        Console.WriteLine("Такого варианта нет.");
+                        break;
+                }
+            }
+            private static void FindByCode(List<Goods> Products)
+            {
+                Console.Write("Введите код товара: ");
 
+                if (!int.TryParse(Console.ReadLine(), out int code))
+                {
+                    Console.WriteLine("Некорректный код.");
+                    return;
+                }
+                foreach (Goods product in Products)
+                {
+                    if (product.uCode == code)
+                    {
+                        ShowProduct(product);
+                        return;
+                    }
+                }
+                Console.WriteLine("Товар не найден.");
+            }
+            private static void FindByName(List<Goods> Products)
+            {
+                Console.Write("Введите название товара: ");
+                string name = Console.ReadLine();
+                bool found = false;
+                foreach (Goods product in Products)
+                {
+                    if (product.Name.ToLower().Contains(name.ToLower()))
+                    {
+                        ShowProduct(product);
+                        found = true;
+                    }
+                }
+                if (!found)
+                {
+                    Console.WriteLine("Товар не найден.");
+                }
+            }
+            private static void FindByCategory(List<Goods> Products)
+            {
+                Category category = ChooseCategory();
+                bool found = false;
+                foreach (Goods product in Products)
+                {
+                    if (product.Category == category)
+                    {
+                        ShowProduct(product);
+                        found = true;
+                    }
+                }
+                if (!found)
+                {
+                    Console.WriteLine("Товары данной категории не найдены.");
+                }
+            }
+            private static void ShowProduct(Goods product)
+            {
+                Console.WriteLine();
+                Console.WriteLine($"Код: {product.uCode}");
+                Console.WriteLine($"Название: {product.Name}");
+                Console.WriteLine($"Цена: {product.Price}");
+                Console.WriteLine($"Количество: {product.Quantity}");
+                Console.WriteLine($"На складе: {(product.State ? "Да" : "Нет")}");
+                Console.WriteLine($"Категория: {product.Category}");
+                Console.WriteLine();
             }
             public static void SellGoods(List<Goods> Products)
             {
