@@ -10,6 +10,7 @@ namespace ISIP924_Semushkin
     {
         static void Main(string[] args)
         {
+
         }
     }
 }
