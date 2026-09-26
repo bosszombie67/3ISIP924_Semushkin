@@ -6,6 +6,14 @@ using System.Threading.Tasks;
 
 namespace ISIP924_Semushkin
 {
+    class TextStats
+    {
+        public string Text;
+        public int WordCount;
+        public int SentenceCount;
+        public int VowelCount;
+        public int ConsonantCount;
+    }
     internal class Program
     {
         class Goods
@@ -105,9 +113,7 @@ namespace ISIP924_Semushkin
         }
         static void Main(string[] args)
         {
-            List<Goods> Products = new List<Goods>();
-            Goods.AddGoods(Products);
-            Goods.DeleteGoods(Products);
+            Console.WriteLine("sosal");
         }
     }
 }
