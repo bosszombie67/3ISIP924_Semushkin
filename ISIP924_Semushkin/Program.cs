@@ -140,7 +140,29 @@ namespace ISIP924_Semushkin
             }
             public static void SellGoods(List<Goods> Products)
             {
-
+                int Code = FindCode(Products);
+                foreach (Goods g in Products)
+                {
+                    if(g.uCode == Code)
+                    {
+                        Console.WriteLine($"Товар: {g.Name}");
+                        Console.WriteLine($"Доступно: {g.Quantity}");
+                        Console.Write("Введите кол-во товара для продажи:");
+                        if (!int.TryParse(Console.ReadLine(), out int Quantity) || Quantity <= 0)
+                        {
+                            Console.WriteLine("Некорректное количество.");
+                            return;
+                        }
+                        if (Quantity > g.Quantity)
+                        {
+                            Console.WriteLine("На складе недостаточно товара.");
+                            return;
+                        }
+                        g.Quantity -= Quantity;
+                        Console.WriteLine($"Товар {g.Name} продан");
+                        Console.WriteLine($"Осталось на складе: {g.Quantity}");
+                    }
+                }
             }
             private static int FindCode(List<Goods> Products)
             {
@@ -164,16 +186,16 @@ namespace ISIP924_Semushkin
                 Console.Clear();
                 Console.Write("Введите название товара: ");
                 string name = Console.ReadLine();
-                bool found = false;
+                bool f = false;
                 foreach (Goods g in Products)
                 {
                     if (g.Name.ToLower().Contains(name.ToLower()))
                     {
                         ShowGood(g);
-                        found = true;
+                        f = true;
                     }
                 }
-                if (!found)
+                if (!f)
                 {
                     Console.WriteLine("Товар не найден.");
                 }
@@ -182,15 +204,15 @@ namespace ISIP924_Semushkin
             {
                 Console.Clear();
                 Category category = ChooseCategory();
-                bool found = false;
+                bool f = false;
                 foreach(Goods g in Products)
                 {
                     if(g.Category == category){
                         ShowGood(g);
-                        found = true;
+                        f = true;
                     }
                 }
-                if (!found)
+                if (!f)
                 {
                     Console.WriteLine("Товар не найден.");
                 }
@@ -199,7 +221,7 @@ namespace ISIP924_Semushkin
             {
                 Console.Clear();
                 int code;
-                bool found = false;
+                bool f = false;
                 while (true)
                 {
                     Console.Write("Введите код товара, который нужно найти: ");
@@ -217,10 +239,10 @@ namespace ISIP924_Semushkin
                     if(g.uCode == code)
                     {
                         ShowGood(g);
-                        found = true;
+                        f = true;
                     }
                 }
-                if (!found)
+                if (!f)
                 {
                     Console.WriteLine("Товар не найден.");
                 }
@@ -246,7 +268,8 @@ namespace ISIP924_Semushkin
             Products.Add(new Goods("SteelSeries Arctis Nova Pro Wireless", 32000, 52, Category.Audio_Video_Equipment));
             Products.Add(new Goods("Logitech G102", 2000, 1488, Category.Peripherals));
             Products.Add(new Goods("AMD Ryzen Threadripper Pro 9995WX", 1567000, 2, Category.Computer_Hardware));
-            Goods.FindGoods(Products);
+            Goods.ShowAllGoods(Products);
+            Goods.SellGoods(Products);
         }
     }
 }
