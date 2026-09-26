@@ -6,14 +6,6 @@ using System.Threading.Tasks;
 
 namespace ISIP924_Semushkin
 {
-    class TextStats
-    {
-        public string Text;
-        public int WordCount;
-        public int SentenceCount;
-        public int VowelCount;
-        public int ConsonantCount;
-    }
     internal class Program
     {
         class Goods
@@ -65,7 +57,6 @@ namespace ISIP924_Semushkin
                         }
                     }
                     Console.WriteLine("Вы выбрали некорректную категорию");
-                    Console.Clear();
                 }
             }
             public static void DeleteGoods(List<Goods> Products)
@@ -80,7 +71,6 @@ namespace ISIP924_Semushkin
                         {
                             Products.RemoveAt(i);
                             Console.WriteLine("Товар удален.");
-                            Console.Clear();
                             return;
                         }
                     }
@@ -89,19 +79,156 @@ namespace ISIP924_Semushkin
             }
             public static void SupplyGoods(List<Goods> Products)
             {
-
+                int Code = FindCode(Products);
+                int Quantity;
+                while (true) {
+                    Console.Write("Введите количество товара, которое требуется поставить: ");
+                    if (int.TryParse(Console.ReadLine(), out Quantity))
+                    {
+                        if (Quantity > 0)
+                        {
+                            break;
+                        }
+                        Console.WriteLine("Введите количество товара должно быть больше нуля");
+                    }
+                }
+                foreach (Goods g in Products)
+                {
+                    if (g.uCode == Code)
+                    {
+                        g.Quantity += Quantity;
+                    }
+                }
             }
-            public static void ShowGoods(List<Goods> Products)
+            public static void ShowAllGoods(List<Goods> Products)
             {
-
+                Console.Clear();
+                Console.WriteLine("Код|Название|Цена|Количество|Категория");
+                foreach(Goods g in Products)
+                {
+                    Console.WriteLine($"{g.uCode}|{g.Name}|{g.Price}|{g.Quantity}|{g.Category}");
+                }
             }
             public static void FindGoods(List<Goods> Products)
             {
-
+                Console.Clear();
+                Console.WriteLine("Меню поиска товара");
+                Console.WriteLine("1. По коду");
+                Console.WriteLine("2. По названию");
+                Console.WriteLine("3. По категории");
+                int choice;
+                while (true)
+                {
+                    Console.Write("Выбор поиска: ");
+                    if(int.TryParse(Console.ReadLine(), out choice) && (choice == 1 || choice == 2 || choice == 3)){
+                        break;
+                    }
+                    Console.WriteLine("Введите корректный выбор");
+                }
+                switch (choice)
+                {
+                    case 1:
+                        FindWCode(Products);
+                        break;
+                    case 2:
+                        FindName(Products);
+                        break;
+                    case 3:
+                        FindCategory(Products);
+                        break;
+                }
             }
             public static void SellGoods(List<Goods> Products)
             {
 
+            }
+            private static int FindCode(List<Goods> Products)
+            {
+               Console.Clear();
+               Console.Write("Введите код нужного товара: ");
+               if (int.TryParse(Console.ReadLine(), out int Code))
+               {
+                  foreach (Goods g in Products)
+                  {
+                     if (g.uCode == Code)
+                     {
+                        return g.uCode;
+                     }
+                  }
+                }
+                Console.WriteLine("Не удалось найти код, возвращается 0");
+                return 0;
+            }
+            private static void FindName(List<Goods> Products)
+            {
+                Console.Clear();
+                Console.Write("Введите название товара: ");
+                string name = Console.ReadLine();
+                bool found = false;
+                foreach (Goods g in Products)
+                {
+                    if (g.Name.ToLower().Contains(name.ToLower()))
+                    {
+                        ShowGood(g);
+                        found = true;
+                    }
+                }
+                if (!found)
+                {
+                    Console.WriteLine("Товар не найден.");
+                }
+            }
+            private static void FindCategory(List<Goods> Products)
+            {
+                Console.Clear();
+                Category category = ChooseCategory();
+                bool found = false;
+                foreach(Goods g in Products)
+                {
+                    if(g.Category == category){
+                        ShowGood(g);
+                        found = true;
+                    }
+                }
+                if (!found)
+                {
+                    Console.WriteLine("Товар не найден.");
+                }
+            }
+            private static void FindWCode(List<Goods> Products)
+            {
+                Console.Clear();
+                int code;
+                bool found = false;
+                while (true)
+                {
+                    Console.Write("Введите код товара, который нужно найти: ");
+                    if (int.TryParse(Console.ReadLine(), out code))
+                    {
+                        if (code > 0)
+                        {
+                            break;
+                        }
+                        Console.WriteLine("Введите корректный код");
+                    }
+                }
+                foreach(Goods g in Products)
+                {
+                    if(g.uCode == code)
+                    {
+                        ShowGood(g);
+                        found = true;
+                    }
+                }
+                if (!found)
+                {
+                    Console.WriteLine("Товар не найден.");
+                }
+            }
+            private static void ShowGood(Goods Product)
+            {
+                Console.WriteLine("Код|Название|Цена|Количество|Категория");
+                Console.WriteLine($"{Product.uCode}|{Product.Name}|{Product.Price}|{Product.Quantity}|{Product.Category}");
             }
         }
         public enum Category
@@ -113,7 +240,13 @@ namespace ISIP924_Semushkin
         }
         static void Main(string[] args)
         {
-            Console.WriteLine("sosal");
+            List<Goods> Products = new List<Goods>();
+            Products.Add(new Goods("RTX 5070", 110000, 69, Category.Computer_Hardware));
+            Products.Add(new Goods("PlayStation 5 Pro", 140000, 67, Category.Consoles));
+            Products.Add(new Goods("SteelSeries Arctis Nova Pro Wireless", 32000, 52, Category.Audio_Video_Equipment));
+            Products.Add(new Goods("Logitech G102", 2000, 1488, Category.Peripherals));
+            Products.Add(new Goods("AMD Ryzen Threadripper Pro 9995WX", 1567000, 2, Category.Computer_Hardware));
+            Goods.FindGoods(Products);
         }
     }
 }
