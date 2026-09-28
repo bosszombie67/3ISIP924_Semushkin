@@ -6,6 +6,16 @@ using System.Threading.Tasks;
 
 namespace ISIP924_Semushkin
 {
+    class TextAnalysis
+    {
+        public string Text { get; set; }
+        public int WordCount { get; set; }
+        public int SentenceCount { get; set; }
+        public string ShortestWord { get; set; }
+        public string LongestWord { get; set; }
+        public int VowelCount { get; set; }
+        public int ConsonantCount { get; set; }
+    }
     internal class Program
     {
         class Goods
@@ -28,16 +38,44 @@ namespace ISIP924_Semushkin
             public static void AddGoods(List<Goods> Products)
             {
                 Console.Clear();
-                Console.Write("Введите название товара: ");
-                string name = Console.ReadLine();
-                Console.Write("Введите цену товара: ");
-                decimal price = decimal.Parse(Console.ReadLine());
-                Console.Write("Введите количество товара: ");
-                int quantity = int.Parse(Console.ReadLine());
+                string name;
+                while (true)
+                {
+                    Console.Write("Введите название товара: ");
+                    name = Console.ReadLine();
+                    if (!string.IsNullOrWhiteSpace(name))
+                    {
+                        break;
+                    }
+                    Console.WriteLine("Название товара не может быть пустым.");
+                }
+                decimal price;
+                while (true)
+                {
+                    Console.Write("Введите цену товара: ");
+                    if (decimal.TryParse(Console.ReadLine(), out price) && price >= 0)
+                    {
+                        break;
+                    }
+                    Console.WriteLine("Цена должна быть числом и не может быть отрицательной.");
+                }
+
+                int quantity;
+                while (true)
+                {
+                    Console.Write("Введите количество товара: ");
+
+                    if (int.TryParse(Console.ReadLine(), out quantity) && quantity >= 0)
+                    {
+                        break;
+                    }
+
+                    Console.WriteLine("Количество должно быть целым числом и не может быть отрицательным.");
+                }
                 Category category = ChooseCategory();
                 Goods newGoods = new Goods(name, price, quantity, category);
                 Products.Add(newGoods);
-                Console.WriteLine("Товар успешно добавлен");
+                Console.WriteLine("Товар успешно добавлен.");
             }
             static Category ChooseCategory()
             {
@@ -166,20 +204,25 @@ namespace ISIP924_Semushkin
             }
             private static int FindCode(List<Goods> Products)
             {
-               Console.Clear();
-               Console.Write("Введите код нужного товара: ");
-               if (int.TryParse(Console.ReadLine(), out int Code))
-               {
-                  foreach (Goods g in Products)
-                  {
-                     if (g.uCode == Code)
-                     {
-                        return g.uCode;
-                     }
-                  }
+                int code;
+                while (true)
+                {
+                    Console.Write("Введите код товара: ");
+                    if (int.TryParse(Console.ReadLine(), out code) && code > 0)
+                    {
+                        break;
+                    }
+                    Console.WriteLine("Код товара должен быть целым числом больше нуля.");
                 }
-                Console.WriteLine("Не удалось найти код, возвращается 0");
-                return 0;
+                foreach (Goods g in Products)
+                {
+                    if (g.uCode == code)
+                    {
+                        return g;
+                    }
+                }
+                Console.WriteLine("Товар с таким кодом не найден.");
+                return null;
             }
             private static void FindName(List<Goods> Products)
             {
@@ -268,8 +311,65 @@ namespace ISIP924_Semushkin
             Products.Add(new Goods("SteelSeries Arctis Nova Pro Wireless", 32000, 52, Category.Audio_Video_Equipment));
             Products.Add(new Goods("Logitech G102", 2000, 1488, Category.Peripherals));
             Products.Add(new Goods("AMD Ryzen Threadripper Pro 9995WX", 1567000, 2, Category.Computer_Hardware));
-            Goods.ShowAllGoods(Products);
-            Goods.SellGoods(Products);
+            while (true)
+            {
+                Console.Clear();
+                Console.WriteLine("================================");
+                Console.WriteLine("       УЧЁТ ТОВАРОВ СКЛАДА");
+                Console.WriteLine("================================");
+                Console.WriteLine("1. Показать все товары");
+                Console.WriteLine("2. Добавить товар");
+                Console.WriteLine("3. Удалить товар");
+                Console.WriteLine("4. Поставить товар на склад");
+                Console.WriteLine("5. Продать товар");
+                Console.WriteLine("6. Найти товар");
+                Console.WriteLine("0. Выход");
+                Console.WriteLine("================================");
+                Console.Write("Выберите действие: ");
+                if (!int.TryParse(Console.ReadLine(), out int choice))
+                {
+                    Console.WriteLine("Введите число.");
+                    Console.WriteLine("Нажмите Enter для продолжения...");
+                    Console.ReadLine();
+                    continue;
+                }
+                switch (choice)
+                {
+                    case 1:
+                        Goods.ShowAllGoods(Products);
+                        break;
+
+                    case 2:
+                        Goods.AddGoods(Products);
+                        break;
+
+                    case 3:
+                        Goods.DeleteGoods(Products);
+                        break;
+
+                    case 4:
+                        Goods.SupplyGoods(Products);
+                        break;
+
+                    case 5:
+                        Goods.SellGoods(Products);
+                        break;
+
+                    case 6:
+                        Goods.FindGoods(Products);
+                        break;
+
+                    case 0:
+                        Console.WriteLine("Программа завершена.");
+                        return;
+
+                    default:
+                        Console.WriteLine("Такого пункта меню нет.");
+                        break;
+                }
+                Console.WriteLine("Нажмите Enter для продолжения...");
+                Console.ReadLine();
+            }
         }
     }
 }
