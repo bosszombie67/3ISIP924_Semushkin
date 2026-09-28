@@ -117,26 +117,29 @@ namespace ISIP924_Semushkin
             }
             public static void SupplyGoods(List<Goods> Products)
             {
-                int Code = FindCode(Products);
-                int Quantity;
-                while (true) {
-                    Console.Write("Введите количество товара, которое требуется поставить: ");
-                    if (int.TryParse(Console.ReadLine(), out Quantity))
-                    {
-                        if (Quantity > 0)
-                        {
-                            break;
-                        }
-                        Console.WriteLine("Введите количество товара должно быть больше нуля");
-                    }
-                }
-                foreach (Goods g in Products)
+                Console.Clear();
+                Console.WriteLine("=== ПОСТАВКА ТОВАРА ===");
+                Goods product = FindCode(Products);
+                if (product == null)
                 {
-                    if (g.uCode == Code)
-                    {
-                        g.Quantity += Quantity;
-                    }
+                    return;
                 }
+                Console.WriteLine($"Товар: {product.Name}");
+                Console.WriteLine($"Сейчас на складе: {product.Quantity}");
+                int quantity;
+                while (true)
+                {
+                    Console.Write("Введите количество товара для поставки: ");
+                    if (int.TryParse(Console.ReadLine(), out quantity) && quantity > 0)
+                    {
+                        break;
+                    }
+                    Console.WriteLine("Количество должно быть целым числом больше нуля.");
+                }
+                product.Quantity += quantity;
+                Console.WriteLine();
+                Console.WriteLine($"Поставка товара \"{product.Name}\" выполнена.");
+                Console.WriteLine($"Теперь на складе: {product.Quantity}");
             }
             public static void ShowAllGoods(List<Goods> Products)
             {
@@ -178,31 +181,52 @@ namespace ISIP924_Semushkin
             }
             public static void SellGoods(List<Goods> Products)
             {
-                int Code = FindCode(Products);
-                foreach (Goods g in Products)
+                Console.Clear();
+                Goods product = FindCode(Products);
+                if (product == null)
                 {
-                    if(g.uCode == Code)
-                    {
-                        Console.WriteLine($"Товар: {g.Name}");
-                        Console.WriteLine($"Доступно: {g.Quantity}");
-                        Console.Write("Введите кол-во товара для продажи:");
-                        if (!int.TryParse(Console.ReadLine(), out int Quantity) || Quantity <= 0)
-                        {
-                            Console.WriteLine("Некорректное количество.");
-                            return;
-                        }
-                        if (Quantity > g.Quantity)
-                        {
-                            Console.WriteLine("На складе недостаточно товара.");
-                            return;
-                        }
-                        g.Quantity -= Quantity;
-                        Console.WriteLine($"Товар {g.Name} продан");
-                        Console.WriteLine($"Осталось на складе: {g.Quantity}");
-                    }
+                    return;
                 }
+                Console.WriteLine($"Товар: {product.Name}");
+                Console.WriteLine($"Цена: {product.Price} руб.");
+                Console.WriteLine($"Доступно на складе: {product.Quantity}");
+                if (product.Quantity == 0)
+                {
+                    Console.WriteLine("Товара нет на складе.");
+                    return;
+                }
+                int quantity;
+                while (true)
+                {
+                    Console.Write("Введите количество товара для продажи: ");
+
+                    if (!int.TryParse(Console.ReadLine(), out quantity))
+                    {
+                        Console.WriteLine("Введите целое число.");
+                        continue;
+                    }
+                    if (quantity <= 0)
+                    {
+                        Console.WriteLine("Количество должно быть больше нуля.");
+                        continue;
+                    }
+                    if (quantity > product.Quantity)
+                    {
+                        Console.WriteLine($"Недостаточно товара. На складе только: {product.Quantity}");
+                        continue;
+                    }
+                    break;
+                }
+                product.Quantity -= quantity;
+                decimal sum = product.Price * quantity;
+                Console.WriteLine();
+                Console.WriteLine("Продажа выполнена.");
+                Console.WriteLine($"Товар: {product.Name}");
+                Console.WriteLine($"Продано: {quantity} шт.");
+                Console.WriteLine($"Сумма продажи: {sum} руб.");
+                Console.WriteLine($"Осталось на складе: {product.Quantity}");
             }
-            private static int FindCode(List<Goods> Products)
+            private static Goods FindCode(List<Goods> Products)
             {
                 int code;
                 while (true)
