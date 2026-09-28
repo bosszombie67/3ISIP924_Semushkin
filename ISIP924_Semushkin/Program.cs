@@ -25,10 +25,15 @@ namespace ISIP924_Semushkin
             private string Name { get; set; }
             private decimal Price { get; set; }
             private int Quantity { get; set; }
-            private bool State => Quantity > 0;
             private Category Category { get; set; }
             public Goods(string name, decimal price, int quantity, Category category)
             {
+                if (string.IsNullOrWhiteSpace(name))
+                    throw new ArgumentException("Название товара не может быть пустым.");
+                if (price < 0)
+                    throw new ArgumentException("Цена товара не может быть отрицательной.");
+                if (quantity < 0)
+                    throw new ArgumentException("Количество товара не может быть отрицательным.");
                 uCode = NextCode++;
                 Name = name;
                 Price = price;
@@ -252,7 +257,17 @@ namespace ISIP924_Semushkin
             {
                 Console.Clear();
                 Console.Write("Введите название товара: ");
-                string name = Console.ReadLine();
+                string name;
+                while (true)
+                {
+                    Console.Write("Введите название товара: ");
+                    name = Console.ReadLine();
+                    if (!string.IsNullOrWhiteSpace(name))
+                    {
+                        break;
+                    }
+                    Console.WriteLine("Название не может быть пустым.");
+                }
                 bool f = false;
                 foreach (Goods g in Products)
                 {
