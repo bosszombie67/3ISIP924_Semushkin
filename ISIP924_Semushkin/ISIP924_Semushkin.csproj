@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{CC0A6905-33A8-43AB-B467-6CA327D9EBF4}</ProjectGuid>
+    <ProjectGuid>{BFB717D5-97D2-8189-34DF-9FEB38362E72}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <RootNamespace>ISIP924_Semushkin</RootNamespace>
     <AssemblyName>ISIP924_Semushkin</AssemblyName>
