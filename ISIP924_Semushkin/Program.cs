@@ -41,11 +41,11 @@ namespace ISIP924_Semushkin
             {
                 if (char.IsLetterOrDigit(text[i]))
                 {
-                    if (text[i + 1] == ' ' && (i + 1 < text.Length))
+                    if (i + 1 < text.Length && !char.IsLetterOrDigit(text[i + 1]))
                     {
                         cw++;
                     }
-                    if (i + 1 <= text.Length && i > 0 && text[i + 1] == ' ' && text[i - 1] == ' ')
+                    else if (i == text.Length - 1)
                     {
                         cw++;
                     }
@@ -58,20 +58,70 @@ namespace ISIP924_Semushkin
             int cs = 0;
             for(int i = 0; i < text.Length; i++)
             {
-                if (i + 1 < text.Length && text[i] == '.' && char.IsUpper(text[i + 1]))
+                if (text[i] == '.' || text[i] == '!' || text[i] == '?')
                 {
-                    cs++;
-                }
-                else if (i + 2 < text.Length && text[i] == '.' && char.IsUpper(text[i + 2]))
-                {
-                    cs++;
-                }
-                else if (i + 1 == text.Length && text[i] == '.')
-                {
-                    cs++;
+                    if (i == text.Length - 1)
+                    {
+                        cs++;
+                    }
+                    else
+                    {
+                        int next = i + 1;
+                        while (next < text.Length && text[next] == ' ')
+                        {
+                            next++;
+                        }
+                        if (next < text.Length && char.IsUpper(text[next]))
+                        {
+                            cs++;
+                        }
+                    }
                 }
             }
             return cs;
+        }
+        public string FindShortestWord(string text)
+        {
+            string word = "";
+            string shortestWord = "";
+            for (int i = 0; i < text.Length; i++)
+            {
+                if (char.IsLetterOrDigit(text[i]))
+                {
+                    word += text[i];
+                }
+                if ((!char.IsLetterOrDigit(text[i]) || i == text.Length - 1) && word.Length > 0)
+                {
+                    if (shortestWord == "" || word.Length < shortestWord.Length)
+                    {
+                        shortestWord = word;
+                    }
+
+                    word = "";
+                }
+            }
+            return shortestWord;
+        }
+        public string FindLongestWord(string text)
+        {
+            string word = "";
+            string longestWord = "";
+            for (int i = 0; i < text.Length; i++)
+            {
+                if (char.IsLetterOrDigit(text[i]))
+                {
+                    word += text[i];
+                }
+                if ((!char.IsLetterOrDigit(text[i]) || i == text.Length - 1) && word.Length > 0)
+                {
+                    if (longestWord == "" || word.Length > longestWord.Length)
+                    {
+                        longestWord = word;
+                    }
+                    word = "";
+                }
+            }
+            return longestWord;
         }
         internal class Program
         {
