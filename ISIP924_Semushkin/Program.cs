@@ -47,23 +47,25 @@ namespace ISIP924_Semushkin
         }
         public void PrintStatistics()
         {
+            Console.WriteLine("Текст:");
+            Console.WriteLine(Text);
             Console.WriteLine($"Количество слов: {wordCount}");
             Console.WriteLine($"Количество предложений: {sentenceCount}");
             Console.WriteLine($"Количество гласных: {vowelCount}");
             Console.WriteLine($"Количество согласных: {consonantCount}" );
-            Console.WriteLine(" ");
+            Console.WriteLine();
             Console.WriteLine("Самые короткие слова:");
             foreach (string word in shortestWords)
             {
                 Console.WriteLine(word);
             }
-            Console.WriteLine(" ");
+            Console.WriteLine();
             Console.WriteLine("Самые длинные слова:");
             foreach (string word in longestWords)
             {
                 Console.WriteLine(word);
             }
-            Console.WriteLine(" ");
+            Console.WriteLine();
             Console.WriteLine("Частота встречаемости букв:");
             foreach (var letter in letterFrequency)
             {
@@ -213,9 +215,62 @@ namespace ISIP924_Semushkin
         {
             static void Main(string[] args)
             {
-                Console.Write("Введите текст: ");
-                TextAnalysis analysis = new TextAnalysis(Console.ReadLine());
-
+                List<TextAnalysis> stats = new List<TextAnalysis>();
+                int choice = -67;
+                while(choice != 0)
+                {
+                    Console.WriteLine("1 - Ввести новый текст");
+                    Console.WriteLine("2 - Вывести статистику прошлых текстов");
+                    Console.WriteLine("0 - Выход");
+                    Console.Write("Выберите действие: ");
+                    choice = int.Parse(Console.ReadLine());
+                    Console.Clear();
+                    switch (choice)
+                    {
+                        case 1:
+                            try
+                            {
+                                Console.Write("Введите текст: ");
+                                TextAnalysis analysis = new TextAnalysis(Console.ReadLine());
+                                analysis.Analyze();
+                                stats.Add(analysis);
+                                Console.WriteLine();
+                                analysis.PrintStatistics();
+                            }
+                            catch (ArgumentException ex)
+                            {
+                                Console.WriteLine(ex.Message);
+                            }
+                            break;
+                        case 2:
+                            if (stats.Count == 0)
+                            {
+                                Console.WriteLine("Статистики пока нет.");
+                            }
+                            else
+                            {
+                                for (int i = 0; i < stats.Count; i++)
+                                {
+                                    Console.WriteLine($"----- Текст №{i + 1} -----");
+                                    stats[i].PrintStatistics();
+                                    Console.WriteLine();
+                                }
+                            }
+                            break;
+                        case 0:
+                            Console.WriteLine("Выход из программы.");
+                            break;
+                        default:
+                            Console.WriteLine("Такого пункта нет.");
+                            break;
+                    }
+                    if (choice != 0)
+                    {
+                        Console.WriteLine("Нажмите любую клавишу...");
+                        Console.ReadKey();
+                        Console.Clear();
+                    }
+                }
             }
         }
 }
