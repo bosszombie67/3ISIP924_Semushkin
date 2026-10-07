@@ -125,11 +125,11 @@ namespace ISIP924_Semushkin
             string word = "";
             for (int i = 0; i < Text.Length; i++)
             {
-                if (char.IsLetterOrDigit(Text[i]))
+                if (char.IsLetter(Text[i]))
                 {
                     word += Text[i];
                 }
-                if ((!char.IsLetterOrDigit(Text[i]) || i == Text.Length - 1) && word.Length > 0)
+                if ((!char.IsLetter(Text[i]) || i == Text.Length - 1) && word.Length > 0)
                 {
                     if (shortestWords.Count == 0 || word.Length < shortestWords[0].Length)
                     {
@@ -150,11 +150,11 @@ namespace ISIP924_Semushkin
             string word = "";
             for (int i = 0; i < Text.Length; i++)
             {
-                if (char.IsLetterOrDigit(Text[i]))
+                if (char.IsLetter(Text[i]))
                 {
                     word += Text[i];
                 }
-                if ((!char.IsLetterOrDigit(Text[i]) || i == Text.Length - 1) && word.Length > 0)
+                if ((!char.IsLetter(Text[i]) || i == Text.Length - 1) && word.Length > 0)
                 {
                     if (longestWords.Count == 0 || word.Length > longestWords[0].Length)
                     {
@@ -223,7 +223,13 @@ namespace ISIP924_Semushkin
                     Console.WriteLine("2 - Вывести статистику прошлых текстов");
                     Console.WriteLine("0 - Выход");
                     Console.Write("Выберите действие: ");
-                    choice = int.Parse(Console.ReadLine());
+                    if (!int.TryParse(Console.ReadLine(), out choice))
+                    {
+                        Console.WriteLine("Введите число.");
+                        Console.ReadKey();
+                        Console.Clear();
+                        continue;
+                    }
                     Console.Clear();
                     switch (choice)
                     {
