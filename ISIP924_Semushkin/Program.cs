@@ -24,30 +24,64 @@ namespace ISIP924_Semushkin
                 text = value;
             }
         }
-        public int wordCount { get; set; }
-        public int sentenceCount { get; set; }
-        public List<string> shortestWords { get; set; } = new List<string>();
-        public List<string> longestWords { get; set; } = new List<string>();
+        public int wordCount { get; private set; }
+        public int sentenceCount { get; private set; }
+        public List<string> shortestWords { get; private set; } = new List<string>();
+        public List<string> longestWords { get; private set; } = new List<string>();
 
-        public int vowelCount { get; set; }
-        public int consonantCount { get; set; }
-        public Dictionary<char, int> letterFrequency { get; set; } = new Dictionary<char, int>();
+        public int vowelCount { get; private set; }
+        public int consonantCount { get; private set; }
+        public Dictionary<char, int> letterFrequency { get; private set; } = new Dictionary<char, int>();
         public TextAnalysis(string inputText)
         {
             Text = inputText;
         }
-        public void CountWords(string text)
+        public void Analyze()
+        {
+            CountWords();
+            CountSentences();
+            FindShortestWords();
+            FindLongestWords();
+            CountVowelsAndConsonants();
+            CountLetterFrequency();
+        }
+        public void PrintStatistics()
+        {
+            Console.WriteLine($"Количество слов: {wordCount}");
+            Console.WriteLine($"Количество предложений: {sentenceCount}");
+            Console.WriteLine($"Количество гласных: {vowelCount}");
+            Console.WriteLine($"Количество согласных: {consonantCount}" );
+            Console.WriteLine(" ");
+            Console.WriteLine("Самые короткие слова:");
+            foreach (string word in shortestWords)
+            {
+                Console.WriteLine(word);
+            }
+            Console.WriteLine(" ");
+            Console.WriteLine("Самые длинные слова:");
+            foreach (string word in longestWords)
+            {
+                Console.WriteLine(word);
+            }
+            Console.WriteLine(" ");
+            Console.WriteLine("Частота встречаемости букв:");
+            foreach (var letter in letterFrequency)
+            {
+                Console.WriteLine(letter.Key + " - " + letter.Value);
+            }
+        }
+        private void CountWords()
         {
             int cw = 0;
-            for (int i = 0; i < text.Length; i++)
+            for (int i = 0; i < Text.Length; i++)
             {
-                if (char.IsLetterOrDigit(text[i]))
+                if (char.IsLetterOrDigit(Text[i]))
                 {
-                    if (i + 1 < text.Length && !char.IsLetterOrDigit(text[i + 1]))
+                    if (i + 1 < Text.Length && !char.IsLetterOrDigit(Text[i + 1]))
                     {
                         cw++;
                     }
-                    else if (i == text.Length - 1)
+                    else if (i == Text.Length - 1)
                     {
                         cw++;
                     }
@@ -55,44 +89,45 @@ namespace ISIP924_Semushkin
             }
             wordCount = cw;
         }
-        public void CountSentences(string text)
+        private void CountSentences()
         {
             int cs = 0;
-            for (int i = 0; i < text.Length; i++)
+            for (int i = 0; i < Text.Length; i++)
             {
-                if (text[i] == '.' || text[i] == '!' || text[i] == '?')
+                if (Text[i] == '.' || Text[i] == '!' || Text[i] == '?')
                 {
-                    if (i == text.Length - 1)
+                    if (i + 1 < Text.Length && (Text[i + 1] == '.' || Text[i + 1] == '!' || Text[i + 1] == '?'))
+                    {
+                        continue;
+                    }
+                    int next = i + 1;
+                    while (next < Text.Length && Text[next] == ' ')
+                    {
+                        next++;
+                    }
+                    if (next == Text.Length)
                     {
                         cs++;
                     }
-                    else
+                    else if (char.IsUpper(Text[next]))
                     {
-                        int next = i + 1;
-                        while (next < text.Length && text[next] == ' ')
-                        {
-                            next++;
-                        }
-                        if (next < text.Length && char.IsUpper(text[next]))
-                        {
-                            cs++;
-                        }
+                        cs++;
                     }
                 }
             }
             sentenceCount = cs;
         }
-        public void FindShortestWords(string text)
+        private void FindShortestWords()
         {
             shortestWords.Clear();
             string word = "";
-            for (int i = 0; i < text.Length; i++)
+            for (int i = 0; i < Text.Length; i++)
             {
-                if (char.IsLetterOrDigit(text[i]))
+                if (char.IsLetterOrDigit(Text[i]))
                 {
-                    word += text[i];
+                    word += Text[i];
                 }
-                if ((!char.IsLetterOrDigit(text[i]) || i == text.Length - 1) && word.Length > 0)
+                if ((!char.IsLetterOrDigit(Text[i]) || i == Text.Length - 1) && word.Length > 0)
                 {
                     if (shortestWords.Count == 0 || word.Length < shortestWords[0].Length)
                     {
@@ -107,17 +142,17 @@ namespace ISIP924_Semushkin
                 }
             }
         }
-        public void FindLongestWords(string text)
+        private void FindLongestWords()
         {
             longestWords.Clear();
             string word = "";
-            for (int i = 0; i < text.Length; i++)
+            for (int i = 0; i < Text.Length; i++)
             {
-                if (char.IsLetterOrDigit(text[i]))
+                if (char.IsLetterOrDigit(Text[i]))
                 {
-                    word += text[i];
+                    word += Text[i];
                 }
-                if ((!char.IsLetterOrDigit(text[i]) || i == text.Length - 1) && word.Length > 0)
+                if ((!char.IsLetterOrDigit(Text[i]) || i == Text.Length - 1) && word.Length > 0)
                 {
                     if (longestWords.Count == 0 || word.Length > longestWords[0].Length)
                     {
@@ -132,29 +167,47 @@ namespace ISIP924_Semushkin
                 }
             }
         }
-        public void CountVowelsAndConsonants(string text)
+        private void CountVowelsAndConsonants()
         {
-            int vc = 0;
-            int cc = 0;
+            vowelCount = 0;
+            consonantCount = 0;
             string vowels = "аеёиоуыэюя";
-            for (int i = 0; i < text.Length; i++)
+            for (int i = 0; i < Text.Length; i++)
             {
-                if (char.IsLetter(text[i]))
+                if (char.IsLetter(Text[i]))
                 {
-                    char letter = char.ToLower(text[i]);
+                    char letter = char.ToLower(Text[i]);
                     if (vowels.Contains(letter))
                     {
-                        vc++;
+                        vowelCount++;
                     }
                     else
                     {
-                        cc++;
+                        consonantCount++;
                     }
                 }
             }
-            vowelCount = vc;
-            consonantCount = cc;
         }
+        private void CountLetterFrequency()
+        {
+            letterFrequency.Clear();
+            for (int i = 0; i < Text.Length; i++)
+            {
+                if (char.IsLetter(Text[i]))
+                {
+                    char letter = char.ToLower(Text[i]);
+                    if (letterFrequency.ContainsKey(letter))
+                    {
+                        letterFrequency[letter]++;
+                    }
+                    else
+                    {
+                        letterFrequency.Add(letter, 1);
+                    }
+                }
+            }
+        }
+
     }
         internal class Program
         {
