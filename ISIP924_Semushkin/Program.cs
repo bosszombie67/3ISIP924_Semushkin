@@ -16,21 +16,21 @@ namespace ISIP924_Semushkin
         public decimal price { get; private set; }
         public Book(string Name, string Author, Genre Genre, int PYear, decimal Price)
         {
-            if (string.IsNullOrWhiteSpace(Name))
-            if (string.IsNullOrEmpty(Author)
-            if (pYear == 0)
-            if (price <= 0)
             id = nextId++;
-            name = Name;
-            author = Author;
+            if (!string.IsNullOrWhiteSpace(Name)) name = Name;
+            if (!string.IsNullOrEmpty(Author)) author = Author;
             genre = Genre;
-            pYear = PYear;
-            price = Price;
+            if (pYear == 0) pYear = PYear;
+            if (price <= 0) price = Price;
         }
     }
     public enum Genre
     {
-
+        Сатира = 1,
+        Эпическая_Поэма = 2,
+        Психологический_Роман = 3,
+        Экзистенциализм = 4,
+        Нуар = 5
     }
     internal class Program
     {
