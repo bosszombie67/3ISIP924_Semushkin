@@ -79,6 +79,24 @@ namespace ISIP924_Semushkin
             var result = books.Where(b => choice == 1 ? b.name.Contains(value) : choice == 2 ? b.author.Contains(value) : choice == 3 && b.genre.ToString().Contains(value));
             foreach (var b in result) PrintBook(b);
         }
+        static void SortByName(List<Book> books)
+        {
+            foreach (var b in books.OrderBy(b => b.name)) PrintBook(b);
+        }
+        static void SortByYear(List<Book> books)
+        {
+            foreach (var b in books.OrderBy(b => b.pYear)) PrintBook(b);
+        }
+        static void PriceBooks(List<Book> books)
+        {
+            if (books.Count == 0) return;
+            Book max = books.OrderByDescending(b => b.price).First();
+            Book min = books.OrderBy(b => b.price).First();
+            Console.WriteLine("Самая дорогая:");
+            PrintBook(max);
+            Console.WriteLine("Самая дешёвая:");
+            PrintBook(min);
+        }
         static void GroupBooks(List<Book> books)
         {
             var groups = books.GroupBy(b => b.author);
