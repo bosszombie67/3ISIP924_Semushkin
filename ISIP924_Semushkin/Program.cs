@@ -51,8 +51,7 @@ namespace ISIP924_Semushkin
             Console.WriteLine("3 - Психологический роман");
             Console.WriteLine("4 - Экзистенциализм");
             Console.WriteLine("5 - Нуар");
-            if (!int.TryParse(Console.ReadLine(), out int choice)
-                || !Enum.IsDefined(typeof(Genre), choice))
+            if (!int.TryParse(Console.ReadLine(), out int choice) || !Enum.IsDefined(typeof(Genre), choice))
             {
                 Console.WriteLine("Неверный жанр!");
                 return;
@@ -112,7 +111,12 @@ namespace ISIP924_Semushkin
                 Console.WriteLine("Пустое значение!");
                 return;
             }
-            var result = books.Where(b => choice == 1 ? b.name.IndexOf(value, StringComparison.OrdinalIgnoreCase) >= 0 : choice == 2 ? b.author.IndexOf(value, StringComparison.OrdinalIgnoreCase) >= 0 : b.genre.ToString().Replace('_', ' ').IndexOf(value, StringComparison.OrdinalIgnoreCase) >= 0);
+            var result = books.Where(b =>
+            {
+                if (choice == 1) return b.name.IndexOf(value, StringComparison.OrdinalIgnoreCase) >= 0;
+                if (choice == 2) return b.author.IndexOf(value, StringComparison.OrdinalIgnoreCase) >= 0;
+                return b.genre.ToString().Replace('_', ' ').IndexOf(value, StringComparison.OrdinalIgnoreCase) >= 0;
+            });
             if (!result.Any()) Console.WriteLine("Книги не найдены!");
             foreach (var b in result) PrintBook(b);
         }
@@ -226,17 +230,17 @@ namespace ISIP924_Semushkin
             List<Book> cart = new List<Book>();
             while (true)
             {
-                Console.WriteLine("\n1 - Добавить книгу");
-                Console.WriteLine("2 - Удалить книгу");
-                Console.WriteLine("3 - Найти книгу");
-                Console.WriteLine("4 - Сортировка по названию");
-                Console.WriteLine("5 - Сортировка по году");
-                Console.WriteLine("6 - Самая дорогая и дешёвая книга");
-                Console.WriteLine("7 - Группировка по авторам");
-                Console.WriteLine("8 - Импорт книг");
-                Console.WriteLine("9 - Добавить в корзину");
-                Console.WriteLine("10 - Показать корзину");
-                Console.WriteLine("0 - Выход");
+                Console.WriteLine("1. Добавить книгу");
+                Console.WriteLine("2. Удалить книгу");
+                Console.WriteLine("3. Найти книгу");
+                Console.WriteLine("4. Сортировка по названию");
+                Console.WriteLine("5. Сортировка по году");
+                Console.WriteLine("6. Самая дорогая и дешёвая книга");
+                Console.WriteLine("7. Группировка по авторам");
+                Console.WriteLine("8. Импорт книг");
+                Console.WriteLine("9. Добавить в корзину");
+                Console.WriteLine("10. Показать корзину");
+                Console.WriteLine("0. Выход");
                 Console.Write("Выберите действие: ");
                 if (!int.TryParse(Console.ReadLine(), out int choice))
                 {
