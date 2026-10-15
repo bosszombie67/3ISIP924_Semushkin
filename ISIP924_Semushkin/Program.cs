@@ -224,6 +224,88 @@ namespace ISIP924_Semushkin
                 new Book("Мальтийский сокол", "Хэммет", Genre.Нуар, 1930, 700)
             };
             List<Book> cart = new List<Book>();
+            while (true)
+            {
+                Console.WriteLine("\n1 - Добавить книгу");
+                Console.WriteLine("2 - Удалить книгу");
+                Console.WriteLine("3 - Найти книгу");
+                Console.WriteLine("4 - Сортировка по названию");
+                Console.WriteLine("5 - Сортировка по году");
+                Console.WriteLine("6 - Самая дорогая и дешёвая книга");
+                Console.WriteLine("7 - Группировка по авторам");
+                Console.WriteLine("8 - Импорт книг");
+                Console.WriteLine("9 - Добавить в корзину");
+                Console.WriteLine("10 - Показать корзину");
+                Console.WriteLine("0 - Выход");
+                Console.Write("Выберите действие: ");
+                if (!int.TryParse(Console.ReadLine(), out int choice))
+                {
+                    Console.WriteLine("Неверный ввод!");
+                    continue;
+                }
+                switch (choice)
+                {
+                    case 1:
+                        {
+                            AddBook(books);
+                            break;
+                        }
+                    case 2:
+                        {
+                            DeleteBook(books);
+                            break;
+                        }
+                    case 3:
+                        {
+                            FindBooks(books);
+                            break;
+                        }
+                    case 4:
+                        {
+                            SortByName(books);
+                            break;
+                        }
+                    case 5:
+                        {
+                            SortByYear(books);
+                            break;
+                        }
+                    case 6:
+                        {
+                            PriceBooks(books);
+                            break;
+                        }
+                    case 7:
+                        {
+                            GroupBooks(books);
+                            break;
+                        }
+                    case 8:
+                        {
+                            ImportBooks(books);
+                            break;
+                        }
+                    case 9:
+                        {
+                            AddToCart(books, cart);
+                            break;
+                        }
+                    case 10:
+                        {
+                            ShowCart(cart);
+                            break;
+                        }
+                    case 0:
+                        {
+                            return;
+                        }
+                    default:
+                        {
+                            Console.WriteLine("Нет такой команды!");
+                            break;
+                        }
+                }
+            }
         }
     }
 }
