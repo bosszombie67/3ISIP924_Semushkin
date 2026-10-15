@@ -19,7 +19,7 @@ namespace ISIP924_Semushkin
             if (string.IsNullOrWhiteSpace(Name)) throw new ArgumentException("Название не может быть пустым!");
             if (string.IsNullOrWhiteSpace(Author)) throw new ArgumentException("Автор не может быть пустым!");
             if (!Enum.IsDefined(typeof(Genre), Genre)) throw new ArgumentException("Неверный жанр!");
-            if (PYear <= 0) throw new ArgumentException("Неверный год!");
+            if (PYear <= 0 || PYear > DateTime.Now.Year) throw new ArgumentException("Неверный год!");
             if (Price < 0) throw new ArgumentException("Цена не может быть отрицательной!");
             id = nextId++;
             name = Name;
@@ -149,6 +149,70 @@ namespace ISIP924_Semushkin
             Console.WriteLine($"Цена: {b.price}");
             Console.WriteLine();
         }
+        static void ImportBooks(List<Book> books)
+        {
+            Console.WriteLine("Введите книги в формате:");
+            Console.WriteLine("Название;Автор;Жанр;Год;Цена");
+            Console.WriteLine("Жанр указывается числом от 1 до 5.");
+            Console.WriteLine("Пустая строка завершает ввод.");
+            int count = 0;
+            while (true)
+            {
+                Console.Write("Книга: ");
+                string input = Console.ReadLine();
+                if (string.IsNullOrWhiteSpace(input)) break;
+                string[] data = input.Split(';');
+                if (data.Length != 5)
+                {
+                    Console.WriteLine("Неверный формат!");
+                    continue;
+                }
+                string name = data[0].Trim();
+                string author = data[1].Trim();
+                if (string.IsNullOrWhiteSpace(name) || string.IsNullOrWhiteSpace(author) || !int.TryParse(data[2], out int genreId) || !Enum.IsDefined(typeof(Genre), genreId) || !int.TryParse(data[3], out int year) || year <= 0 || !decimal.TryParse(data[4], out decimal price) || price < 0)
+                {
+                    Console.WriteLine("Некорректные данные!");
+                    continue;
+                }
+                Genre genre = (Genre)genreId;
+                books.Add(new Book(name, author, genre, year, price));
+                count++;
+                Console.WriteLine("Книга добавлена!");
+            }
+            Console.WriteLine($"Всего импортировано книг: {count}");
+        }
+        static void AddToCart(List<Book> books, List<Book> cart)
+        {
+            Console.Write("Введите ID книги: ");
+            if (!int.TryParse(Console.ReadLine(), out int id))
+            {
+                Console.WriteLine("Неверный ID!");
+                return;
+            }
+            Book book = books.FirstOrDefault(b => b.id == id);
+            if (book == null)
+            {
+                Console.WriteLine("Книга не найдена!");
+                return;
+            }
+            cart.Add(book);
+            Console.WriteLine("Книга добавлена в корзину!");
+        }
+        static void ShowCart(List<Book> cart)
+        {
+            if (cart.Count == 0)
+            {
+                Console.WriteLine("Корзина пуста!");
+                return;
+            }
+            Console.WriteLine("Ваша корзина:");
+            foreach (var book in cart)
+            {
+                Console.WriteLine($"{book.name} - {book.price} руб.");
+            }
+            decimal total = cart.Sum(b => b.price);
+            Console.WriteLine($"Итоговая стоимость: {total} руб.");
+        }
         static void Main(string[] args)
         {
             List<Book> books = new List<Book>
@@ -159,6 +223,7 @@ namespace ISIP924_Semushkin
                 new Book("Посторонний", "Камю", Genre.Экзистенциализм, 1942, 350),
                 new Book("Мальтийский сокол", "Хэммет", Genre.Нуар, 1930, 700)
             };
+            List<Book> cart = new List<Book>();
         }
     }
 }
