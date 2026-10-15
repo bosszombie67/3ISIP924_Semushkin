@@ -62,6 +62,14 @@ namespace ISIP924_Semushkin
             books.Add(new Book(name, author, genre, year, price));
             Console.WriteLine("Книга успешно добавлена!");
         }
+        static void DeleteBook(List<Book> books)
+        {
+            Console.Write("Введите ID: ");
+            int id = int.Parse(Console.ReadLine());
+            Book book = books.FirstOrDefault(b => b.id == id);
+            if (book != null)
+                books.Remove(book);
+        }
     }
     public enum Genre
     {
