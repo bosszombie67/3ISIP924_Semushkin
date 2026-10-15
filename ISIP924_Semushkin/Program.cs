@@ -28,6 +28,17 @@ namespace ISIP924_Semushkin
             pYear = PYear;
             price = Price;
         }
+    }
+    public enum Genre
+    {
+        Сатира = 1,
+        Эпическая_Поэма = 2,
+        Психологический_Роман = 3,
+        Экзистенциализм = 4,
+        Нуар = 5
+    }
+    internal class Program
+    {
         static void AddBook(List<Book> books)
         {
             Console.Write("Введите название: ");
@@ -138,19 +149,16 @@ namespace ISIP924_Semushkin
             Console.WriteLine($"Цена: {b.price}");
             Console.WriteLine();
         }
-    }
-    public enum Genre
-    {
-        Сатира = 1,
-        Эпическая_Поэма = 2,
-        Психологический_Роман = 3,
-        Экзистенциализм = 4,
-        Нуар = 5
-    }
-    internal class Program
-    {
         static void Main(string[] args)
         {
+            List<Book> books = new List<Book>
+            {
+                new Book("Мастер и Маргарита", "Булгаков", Genre.Сатира, 1967, 500),
+                new Book("Илиада", "Гомер", Genre.Эпическая_Поэма, 1850, 400),
+                new Book("Преступление и наказание", "Достоевский", Genre.Психологический_Роман, 1866, 650),
+                new Book("Посторонний", "Камю", Genre.Экзистенциализм, 1942, 350),
+                new Book("Мальтийский сокол", "Хэммет", Genre.Нуар, 1930, 700)
+            };
         }
     }
 }
