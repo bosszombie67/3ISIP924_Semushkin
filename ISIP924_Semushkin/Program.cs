@@ -70,6 +70,30 @@ namespace ISIP924_Semushkin
             if (book != null)
                 books.Remove(book);
         }
+        static void FindBooks(List<Book> books)
+        {
+            Console.Write("Поиск (1 - название, 2 - автор, 3 - жанр): ");
+            int choice = int.Parse(Console.ReadLine());
+            Console.Write("Введите значение: ");
+            string value = Console.ReadLine() ?? "";
+            var result = books.Where(b => choice == 1 ? b.name.Contains(value) : choice == 2 ? b.author.Contains(value) : choice == 3 && b.genre.ToString().Contains(value));
+            foreach (var b in result) PrintBook(b);
+        }
+        static void GroupBooks(List<Book> books)
+        {
+            var groups = books.GroupBy(b => b.author);
+            foreach (var group in groups) Console.WriteLine($"{group.Key}: {group.Count()} книг");
+        }
+        static void PrintBook(Book b)
+        {
+            Console.WriteLine($"ID: {b.id}");
+            Console.WriteLine($"Название: {b.name}");
+            Console.WriteLine($"Автор: {b.author}");
+            Console.WriteLine($"Жанр: {b.genre}");
+            Console.WriteLine($"Год: {b.pYear}");
+            Console.WriteLine($"Цена: {b.price}");
+            Console.WriteLine();
+        }
     }
     public enum Genre
     {
