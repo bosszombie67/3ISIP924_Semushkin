@@ -16,12 +16,17 @@ namespace ISIP924_Semushkin
         public decimal price { get; private set; }
         public Book(string Name, string Author, Genre Genre, int PYear, decimal Price)
         {
+            if (string.IsNullOrWhiteSpace(Name)) throw new ArgumentException("Название не может быть пустым!");
+            if (string.IsNullOrWhiteSpace(Author)) throw new ArgumentException("Автор не может быть пустым!");
+            if (!Enum.IsDefined(typeof(Genre), Genre)) throw new ArgumentException("Неверный жанр!");
+            if (PYear <= 0) throw new ArgumentException("Неверный год!");
+            if (Price < 0) throw new ArgumentException("Цена не может быть отрицательной!");
             id = nextId++;
-            if (!string.IsNullOrWhiteSpace(Name)) name = Name;
-            if (!string.IsNullOrWhiteSpace(Author)) author = Author;
+            name = Name;
+            author = Author;
             genre = Genre;
-            if (pYear >= 0) pYear = PYear;
-            if (price > 0) price = Price;
+            pYear = PYear;
+            price = Price;
         }
         static void AddBook(List<Book> books)
         {
@@ -65,18 +70,39 @@ namespace ISIP924_Semushkin
         static void DeleteBook(List<Book> books)
         {
             Console.Write("Введите ID: ");
-            int id = int.Parse(Console.ReadLine());
+            if (!int.TryParse(Console.ReadLine(), out int id))
+            {
+                Console.WriteLine("Неверный ID!");
+                return;
+            }
             Book book = books.FirstOrDefault(b => b.id == id);
             if (book != null)
+            {
                 books.Remove(book);
+                Console.WriteLine("Книга удалена!");
+            }
+            else
+            {
+                Console.WriteLine("Книга не найдена!");
+            }
         }
         static void FindBooks(List<Book> books)
         {
             Console.Write("Поиск (1 - название, 2 - автор, 3 - жанр): ");
-            int choice = int.Parse(Console.ReadLine());
+            if (!int.TryParse(Console.ReadLine(), out int choice) || choice < 1 || choice > 3)
+            {
+                Console.WriteLine("Неверный выбор!");
+                return;
+            }
             Console.Write("Введите значение: ");
             string value = Console.ReadLine() ?? "";
-            var result = books.Where(b => choice == 1 ? b.name.Contains(value) : choice == 2 ? b.author.Contains(value) : choice == 3 && b.genre.ToString().Contains(value));
+            if (string.IsNullOrWhiteSpace(value))
+            {
+                Console.WriteLine("Пустое значение!");
+                return;
+            }
+            var result = books.Where(b => choice == 1 ? b.name.IndexOf(value, StringComparison.OrdinalIgnoreCase) >= 0 : choice == 2 ? b.author.IndexOf(value, StringComparison.OrdinalIgnoreCase) >= 0 : b.genre.ToString().Replace('_', ' ').IndexOf(value, StringComparison.OrdinalIgnoreCase) >= 0);
+            if (!result.Any()) Console.WriteLine("Книги не найдены!");
             foreach (var b in result) PrintBook(b);
         }
         static void SortByName(List<Book> books)
