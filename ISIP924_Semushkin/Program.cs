@@ -7,8 +7,8 @@ namespace ISIP924_Semushkin
 {
     class Book
     {
-        private int id { get; }
-        public int nextId = 1;
+        public int id { get; }
+        private static  int nextId = 1;
         public string name { get; private set; }
         public string author { get; private set; }
         public Genre genre { get; private set; }
@@ -18,10 +18,49 @@ namespace ISIP924_Semushkin
         {
             id = nextId++;
             if (!string.IsNullOrWhiteSpace(Name)) name = Name;
-            if (!string.IsNullOrEmpty(Author)) author = Author;
+            if (!string.IsNullOrWhiteSpace(Author)) author = Author;
             genre = Genre;
-            if (pYear == 0) pYear = PYear;
-            if (price <= 0) price = Price;
+            if (pYear >= 0) pYear = PYear;
+            if (price > 0) price = Price;
+        }
+        static void AddBook(List<Book> books)
+        {
+            Console.Write("Введите название: ");
+            string name = Console.ReadLine();
+            Console.Write("Введите автора: ");
+            string author = Console.ReadLine();
+            Console.WriteLine("Выберите жанр:");
+            Console.WriteLine("1 - Сатира");
+            Console.WriteLine("2 - Эпическая поэма");
+            Console.WriteLine("3 - Психологический роман");
+            Console.WriteLine("4 - Экзистенциализм");
+            Console.WriteLine("5 - Нуар");
+            if (!int.TryParse(Console.ReadLine(), out int choice)
+                || !Enum.IsDefined(typeof(Genre), choice))
+            {
+                Console.WriteLine("Неверный жанр!");
+                return;
+            }
+            Genre genre = (Genre)choice;
+            Console.Write("Введите год издания: ");
+            if (!int.TryParse(Console.ReadLine(), out int year) || year <= 0)
+            {
+                Console.WriteLine("Неверный год издания!");
+                return;
+            }
+            Console.Write("Введите цену: ");
+            if (!decimal.TryParse(Console.ReadLine(), out decimal price) || price < 0)
+            {
+                Console.WriteLine("Неверная цена!");
+                return;
+            }
+            if (string.IsNullOrWhiteSpace(name) || string.IsNullOrWhiteSpace(author))
+            {
+                Console.WriteLine("Название и автор не могут быть пустыми!");
+                return;
+            }
+            books.Add(new Book(name, author, genre, year, price));
+            Console.WriteLine("Книга успешно добавлена!");
         }
     }
     public enum Genre
