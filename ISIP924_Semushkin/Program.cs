@@ -9,66 +9,41 @@ namespace ISIP924_Semushkin
     }
     abstract class Person
     {
-        private string name;
-        private int age;
-        private string contact;
-
-        public string Name
-        {
-            get { return name; }
-            set
-            {
-                if (string.IsNullOrWhiteSpace(value))
-                {
-                    throw new ArgumentException("Имя не может быть пустым.");
-                }
-                name = value.Trim();
-            }
-        }
-        public int Age
-        {
-            get { return age; }
-            set
-            {
-                if (value < 1 || value > 120)
-                {
-                    throw new ArgumentException("Возраст должен быть от 1 до 120.");
-                }
-                age = value;
-            }
-        }
-        public string Contact
-        {
-            get { return contact; }
-            set
-            {
-                if (string.IsNullOrWhiteSpace(value))
-                {
-                    throw new ArgumentException("Контакт не может быть пустым.");
-                }
-                contact = value.Trim();
-            }
-        }
+        public string Name { get; private set; }
+        public int Age { get; private set; }
+        public string Contact { get; private set; }
+        private List<Course> courses = new List<Course>();
         protected Person(string name, int age, string contact)
         {
-            Name = name;
+            if (string.IsNullOrWhiteSpace(name))
+                throw new ArgumentException("Имя не может быть пустым.");
+            if (age < 1 || age > 120)
+                throw new ArgumentException("Возраст должен быть от 1 до 120.");
+            if (string.IsNullOrWhiteSpace(contact))
+                throw new ArgumentException("Контакт не может быть пустым.");
+            Name = name.Trim();
             Age = age;
-            Contact = contact;
+            Contact = contact.Trim();
         }
-
         protected void PrintPersonInfo()
         {
-            Console.WriteLine("Имя: " + Name);
-            Console.WriteLine("Возраст: " + Age);
-            Console.WriteLine("Контакт: " + Contact);
+            Console.WriteLine($"Имя: {Name}; Возраст: {Age}; Контакт: {Contact}");
+        }
+        internal void AddCourse(Course course)
+        {
+            if (course == null) throw new ArgumentException("Курс не выбран.");
+            if (!courses.Contains(course)) courses.Add(course);
+        }
+        public void PrintCourses()
+        {
+            Console.WriteLine("Курсы:");
+            if (courses.Count == 0) Console.WriteLine("Связанных курсов пока нет.");
+            foreach (Course course in courses) course.PrintInfo();
         }
     }
     class Student : Person, IInformation
     {
-        public Student(string name, int age, string contact) : base(name, age, contact)
-        {
-        }
-
+        public Student(string name, int age, string contact) : base(name, age, contact) { }
         public void PrintInfo()
         {
             Console.WriteLine("Студент:");
@@ -77,9 +52,7 @@ namespace ISIP924_Semushkin
     }
     class Teacher : Person, IInformation
     {
-        public Teacher(string name, int age, string contact) : base(name, age, contact)
-        {
-        }
+        public Teacher(string name, int age, string contact) : base(name, age, contact) { }
         public void PrintInfo()
         {
             Console.WriteLine("Преподаватель:");
@@ -88,75 +61,44 @@ namespace ISIP924_Semushkin
     }
     class Course
     {
-        private string name;
-        private List<Student> students = new List<Student>();
-        public string Name
-        {
-            get { return name; }
-            set
-            {
-                if (string.IsNullOrWhiteSpace(value))
-                {
-                    throw new ArgumentException("Название курса не может быть пустым.");
-                }
-                name = value.Trim();
-            }
-        }
+        public string Name { get; private set; }
         public Teacher Teacher { get; private set; }
+        private List<Student> students = new List<Student>();
         public Course(string name, Teacher teacher)
         {
-            Name = name;
+            if (string.IsNullOrWhiteSpace(name))
+                throw new ArgumentException("Название курса не может быть пустым.");
             if (teacher == null)
-            {
                 throw new ArgumentException("Нужно выбрать преподавателя.");
-            }
+            Name = name.Trim();
             Teacher = teacher;
+            teacher.AddCourse(this);
         }
         public void EnrollStudent(Student student)
         {
-            if (student == null)
-            {
-                throw new ArgumentException("Нужно выбрать студента.");
-            }
+            if (student == null) throw new ArgumentException("Нужно выбрать студента.");
             if (students.Contains(student))
-            {
                 throw new ArgumentException("Студент уже записан на этот курс.");
-            }
             students.Add(student);
-        }
-        public bool HasStudent(Student student)
-        {
-            return students.Contains(student);
+            student.AddCourse(this);
         }
         public void PrintInfo()
         {
-            Console.WriteLine("Курс: " + Name);
-            Console.WriteLine("Преподаватель: " + Teacher.Name);
-            Console.WriteLine("Количество студентов: " + students.Count);
+            Console.WriteLine($"Курс: {Name}; преподаватель: {Teacher.Name}; студентов: {students.Count}");
         }
         public void PrintStudents()
         {
-            if (students.Count == 0)
-            {
-                Console.WriteLine("На курс пока никто не записан.");
-                return;
-            }
-            foreach (Student student in students)
-            {
-                student.PrintInfo();
-                Console.WriteLine();
-            }
+            if (students.Count == 0) Console.WriteLine("На курс пока никто не записан.");
+            foreach (Student student in students) student.PrintInfo();
         }
     }
     internal class Program
     {
+        static List<Student> students = new List<Student>();
+        static List<Teacher> teachers = new List<Teacher>();
+        static List<Course> courses = new List<Course>();
         static void Main(string[] args)
         {
-            Console.InputEncoding = Encoding.UTF8;
-            Console.OutputEncoding = Encoding.UTF8;
-            List<Student> students = new List<Student>();
-            List<Teacher> teachers = new List<Teacher>();
-            List<Course> courses = new List<Course>();
             int choice = -1;
             while (choice != 0)
             {
@@ -174,10 +116,7 @@ namespace ISIP924_Semushkin
                 Console.WriteLine("0 - Выход");
                 Console.Write("Выберите действие: ");
                 string input = Console.ReadLine();
-                if (input == null)
-                {
-                    return;
-                }
+                if (input == null) return;
                 if (!int.TryParse(input, out choice))
                 {
                     Console.WriteLine("Введите целое число.");
@@ -188,347 +127,18 @@ namespace ISIP924_Semushkin
                 {
                     switch (choice)
                     {
-                        case 1:
-                            {
-                                Console.Write("Имя: ");
-                                string name = Console.ReadLine();
-                                if (name == null)
-                                {
-                                    return;
-                                }
-                                Console.Write("Возраст: ");
-                                string ageInput = Console.ReadLine();
-                                if (ageInput == null)
-                                {
-                                    return;
-                                }
-                                int age;
-                                if (!int.TryParse(ageInput, out age))
-                                {
-                                    Console.WriteLine("Возраст нужно вводить целым числом.");
-                                    break;
-                                }
-                                Console.Write("Контакт: ");
-                                string contact = Console.ReadLine();
-                                if (contact == null)
-                                {
-                                    return;
-                                }
-                                Student student = new Student(name, age, contact);
-                                students.Add(student);
-                                Console.WriteLine("Студент добавлен.");
-                                break;
-                            }
-                        case 2:
-                            {
-                                Console.Write("Имя: ");
-                                string name = Console.ReadLine();
-                                if (name == null)
-                                {
-                                    return;
-                                }
-                                Console.Write("Возраст: ");
-                                string ageInput = Console.ReadLine();
-                                if (ageInput == null)
-                                {
-                                    return;
-                                }
-                                int age;
-                                if (!int.TryParse(ageInput, out age))
-                                {
-                                    Console.WriteLine("Возраст нужно вводить целым числом.");
-                                    break;
-                                }
-                                Console.Write("Контакт: ");
-                                string contact = Console.ReadLine();
-                                if (contact == null)
-                                {
-                                    return;
-                                }
-                                Teacher teacher = new Teacher(name, age, contact);
-                                teachers.Add(teacher);
-                                Console.WriteLine("Преподаватель добавлен.");
-                                break;
-                            }
-                        case 3:
-                            {
-                                if (teachers.Count == 0)
-                                {
-                                    Console.WriteLine("Сначала добавьте преподавателя.");
-                                    break;
-                                }
-                                Console.Write("Название курса: ");
-                                string title = Console.ReadLine();
-                                if (title == null)
-                                {
-                                    return;
-                                }
-                                for (int i = 0; i < teachers.Count; i++)
-                                {
-                                    Console.WriteLine((i + 1) + ". " + teachers[i].Name);
-                                }
-                                Console.Write("Номер преподавателя (0 - отмена): ");
-                                input = Console.ReadLine();
-                                if (input == null)
-                                {
-                                    return;
-                                }
-                                int teacherNumber;
-                                if (!int.TryParse(input, out teacherNumber) || teacherNumber < 0 || teacherNumber > teachers.Count)
-                                {
-                                    Console.WriteLine("Неверный номер преподавателя.");
-                                    break;
-                                }
-                                if (teacherNumber == 0)
-                                {
-                                    break;
-                                }
-                                Course course = new Course(title, teachers[teacherNumber - 1]);
-                                courses.Add(course);
-                                Console.WriteLine("Курс создан.");
-                                break;
-                            }
-                        case 4:
-                            {
-                                if (students.Count == 0 || courses.Count == 0)
-                                {
-                                    Console.WriteLine("Сначала добавьте студента и создайте курс.");
-                                    break;
-                                }
-                                for (int i = 0; i < students.Count; i++)
-                                {
-                                    Console.WriteLine((i + 1) + ". " + students[i].Name);
-                                }
-                                Console.Write("Номер студента (0 - отмена): ");
-                                input = Console.ReadLine();
-                                if (input == null)
-                                {
-                                    return;
-                                }
-                                int studentNumber;
-                                if (!int.TryParse(input, out studentNumber) || studentNumber < 0 || studentNumber > students.Count)
-                                {
-                                    Console.WriteLine("Неверный номер студента.");
-                                    break;
-                                }
-                                if (studentNumber == 0)
-                                {
-                                    break;
-                                }
-                                for (int i = 0; i < courses.Count; i++)
-                                {
-                                    Console.WriteLine((i + 1) + ". " + courses[i].Name);
-                                }
-                                Console.Write("Номер курса (0 - отмена): ");
-                                input = Console.ReadLine();
-                                if (input == null)
-                                {
-                                    return;
-                                }
-                                int courseNumber;
-                                if (!int.TryParse(input, out courseNumber) || courseNumber < 0 || courseNumber > courses.Count)
-                                {
-                                    Console.WriteLine("Неверный номер курса.");
-                                    break;
-                                }
-                                if (courseNumber == 0)
-                                {
-                                    break;
-                                }
-                                courses[courseNumber - 1].EnrollStudent(students[studentNumber - 1]);
-                                Console.WriteLine("Студент записан на курс.");
-                                break;
-                            }
-                        case 5:
-                            {
-                                if (students.Count == 0)
-                                {
-                                    Console.WriteLine("Список пуст.");
-                                }
-                                foreach (Student student in students)
-                                {
-                                    IInformation information = student;
-                                    information.PrintInfo();
-                                    Console.WriteLine();
-                                }
-                                break;
-                            }
-                        case 6:
-                            {
-                                if (teachers.Count == 0)
-                                {
-                                    Console.WriteLine("Список пуст.");
-                                }
-                                foreach (Teacher teacher in teachers)
-                                {
-                                    IInformation information = teacher;
-                                    information.PrintInfo();
-                                    Console.WriteLine();
-                                }
-                                break;
-                            }
-                        case 7:
-                            {
-                                if (courses.Count == 0)
-                                {
-                                    Console.WriteLine("Курсов пока нет.");
-                                }
-                                foreach (Course item in courses)
-                                {
-                                    item.PrintInfo();
-                                    Console.WriteLine();
-                                }
-                                break;
-                            }
-                        case 8:
-                            {
-                                List<Person> selectedPeople = new List<Person>();
-                                foreach (Student student in students)
-                                {
-                                    selectedPeople.Add(student);
-                                }
-                                if (selectedPeople.Count == 0)
-                                {
-                                    Console.WriteLine("Список пуст.");
-                                    break;
-                                }
-                                for (int i = 0; i < selectedPeople.Count; i++)
-                                {
-                                    Console.WriteLine((i + 1) + ". " + selectedPeople[i].Name);
-                                }
-                                Console.Write("Номер человека (0 - отмена): ");
-                                input = Console.ReadLine();
-                                if (input == null)
-                                {
-                                    return;
-                                }
-                                int personNumber;
-                                if (!int.TryParse(input, out personNumber) || personNumber < 0 || personNumber > selectedPeople.Count)
-                                {
-                                    Console.WriteLine("Неверный номер человека.");
-                                    break;
-                                }
-                                if (personNumber == 0)
-                                {
-                                    break;
-                                }
-                                Person selectedPerson = selectedPeople[personNumber - 1];
-                                IInformation selectedInformation = (IInformation)selectedPerson;
-                                selectedInformation.PrintInfo();
-                                Console.WriteLine("Курсы:");
-                                int count = 0;
-                                foreach (Course item in courses)
-                                {
-                                    bool found = item.HasStudent((Student)selectedPerson);
-                                    if (found)
-                                    {
-                                        item.PrintInfo();
-                                        Console.WriteLine();
-                                        count++;
-                                    }
-                                }
-                                if (count == 0)
-                                {
-                                    Console.WriteLine("Связанных курсов пока нет.");
-                                }
-                                break;
-                            }
-                        case 9:
-                            {
-                                List<Person> selectedPeople = new List<Person>();
-                                foreach (Teacher teacher in teachers)
-                                {
-                                    selectedPeople.Add(teacher);
-                                }
-                                if (selectedPeople.Count == 0)
-                                {
-                                    Console.WriteLine("Список пуст.");
-                                    break;
-                                }
-                                for (int i = 0; i < selectedPeople.Count; i++)
-                                {
-                                    Console.WriteLine((i + 1) + ". " + selectedPeople[i].Name);
-                                }
-                                Console.Write("Номер человека (0 - отмена): ");
-                                input = Console.ReadLine();
-                                if (input == null)
-                                {
-                                    return;
-                                }
-                                int personNumber;
-                                if (!int.TryParse(input, out personNumber) || personNumber < 0 || personNumber > selectedPeople.Count)
-                                {
-                                    Console.WriteLine("Неверный номер человека.");
-                                    break;
-                                }
-                                if (personNumber == 0)
-                                {
-                                    break;
-                                }
-                                Person selectedPerson = selectedPeople[personNumber - 1];
-                                IInformation selectedInformation = (IInformation)selectedPerson;
-                                selectedInformation.PrintInfo();
-                                Console.WriteLine("Курсы:");
-                                int count = 0;
-                                foreach (Course item in courses)
-                                {
-                                    bool found = item.Teacher == selectedPerson;
-                                    if (found)
-                                    {
-                                        item.PrintInfo();
-                                        Console.WriteLine();
-                                        count++;
-                                    }
-                                }
-                                if (count == 0)
-                                {
-                                    Console.WriteLine("Связанных курсов пока нет.");
-                                }
-                                break;
-                            }
-                        case 10:
-                            {
-                                if (courses.Count == 0)
-                                {
-                                    Console.WriteLine("Курсов пока нет.");
-                                    break;
-                                }
-                                for (int i = 0; i < courses.Count; i++)
-                                {
-                                    Console.WriteLine((i + 1) + ". " + courses[i].Name);
-                                }
-                                Console.Write("Номер курса (0 - отмена): ");
-                                input = Console.ReadLine();
-                                if (input == null)
-                                {
-                                    return;
-                                }
-                                int selectedCourseNumber;
-                                if (!int.TryParse(input, out selectedCourseNumber) || selectedCourseNumber < 0 || selectedCourseNumber > courses.Count)
-                                {
-                                    Console.WriteLine("Неверный номер курса.");
-                                    break;
-                                }
-                                if (selectedCourseNumber == 0)
-                                {
-                                    break;
-                                }
-                                Course selectedCourse = courses[selectedCourseNumber - 1];
-                                selectedCourse.PrintInfo();
-                                Console.WriteLine("Студенты курса:");
-                                selectedCourse.PrintStudents();
-                                break;
-                            }
-                        case 0:
-                            {
-                                Console.WriteLine("Выход из программы.");
-                                break;
-                            }
-                        default:
-                            {
-                                Console.WriteLine("Такого пункта нет.");
-                                break;
-                            }
+                        case 1: AddPerson(true); break;
+                        case 2: AddPerson(false); break;
+                        case 3: CreateCourse(); break;
+                        case 4: EnrollStudent(); break;
+                        case 5: ShowStudents(); break;
+                        case 6: ShowTeachers(); break;
+                        case 7: ShowCourses(); break;
+                        case 8: ShowPersonCourses(ChooseStudent()); break;
+                        case 9: ShowPersonCourses(ChooseTeacher()); break;
+                        case 10: ShowCourseStudents(); break;
+                        case 0: Console.WriteLine("Выход из программы."); break;
+                        default: Console.WriteLine("Такого пункта нет."); break;
                     }
                 }
                 catch (ArgumentException ex)
@@ -536,6 +146,137 @@ namespace ISIP924_Semushkin
                     Console.WriteLine(ex.Message);
                 }
             }
+        }
+        static void AddPerson(bool isStudent)
+        {
+            Console.Write("Имя: ");
+            string name = Console.ReadLine();
+            if (name == null) return;
+            Console.Write("Возраст: ");
+            string input = Console.ReadLine();
+            if (input == null) return;
+            int age;
+            if (!int.TryParse(input, out age)) throw new ArgumentException("Возраст нужно вводить целым числом.");
+            Console.Write("Контакт: ");
+            string contact = Console.ReadLine();
+            if (contact == null) return;
+            if (isStudent)
+            {
+                students.Add(new Student(name, age, contact));
+                Console.WriteLine("Студент добавлен.");
+            }
+            else
+            {
+                teachers.Add(new Teacher(name, age, contact));
+                Console.WriteLine("Преподаватель добавлен.");
+            }
+        }
+        static void CreateCourse()
+        {
+            if (teachers.Count == 0)
+            {
+                Console.WriteLine("Сначала добавьте преподавателя.");
+                return;
+            }
+            Console.Write("Название курса: ");
+            string title = Console.ReadLine();
+            if (title == null) return;
+            Teacher teacher = ChooseTeacher();
+            if (teacher == null) return;
+            courses.Add(new Course(title, teacher));
+            Console.WriteLine("Курс создан.");
+        }
+        static void EnrollStudent()
+        {
+            if (students.Count == 0 || courses.Count == 0)
+            {
+                Console.WriteLine("Сначала добавьте студента и создайте курс.");
+                return;
+            }
+            Student student = ChooseStudent();
+            if (student == null) return;
+            Course course = ChooseCourse();
+            if (course == null) return;
+            course.EnrollStudent(student);
+            Console.WriteLine("Студент записан на курс.");
+        }
+        static void ShowStudents()
+        {
+            if (students.Count == 0) Console.WriteLine("Список пуст.");
+            foreach (IInformation person in students) person.PrintInfo();
+        }
+        static void ShowTeachers()
+        {
+            if (teachers.Count == 0) Console.WriteLine("Список пуст.");
+            foreach (IInformation person in teachers) person.PrintInfo();
+        }
+        static void ShowCourses()
+        {
+            if (courses.Count == 0) Console.WriteLine("Курсов пока нет.");
+            foreach (Course course in courses) course.PrintInfo();
+        }
+        static void ShowPersonCourses(Person person)
+        {
+            if (person == null) return;
+            IInformation information = (IInformation)person;
+            information.PrintInfo();
+            person.PrintCourses();
+        }
+        static void ShowCourseStudents()
+        {
+            Course course = ChooseCourse();
+            if (course == null) return;
+            course.PrintInfo();
+            Console.WriteLine("Студенты курса:");
+            course.PrintStudents();
+        }
+        static Student ChooseStudent()
+        {
+            if (students.Count == 0)
+            {
+                Console.WriteLine("Список пуст.");
+                return null;
+            }
+            for (int i = 0; i < students.Count; i++) Console.WriteLine((i + 1) + ". " + students[i].Name);
+            Console.Write("Номер студента (0 - отмена): ");
+            string input = Console.ReadLine();
+            if (input == null) return null;
+            int number;
+            if (!int.TryParse(input, out number) || number < 0 || number > students.Count) throw new ArgumentException("Неверный номер студента.");
+            if (number == 0) return null;
+            return students[number - 1];
+        }
+        static Teacher ChooseTeacher()
+        {
+            if (teachers.Count == 0)
+            {
+                Console.WriteLine("Список пуст.");
+                return null;
+            }
+            for (int i = 0; i < teachers.Count; i++) Console.WriteLine((i + 1) + ". " + teachers[i].Name);
+            Console.Write("Номер преподавателя (0 - отмена): ");
+            string input = Console.ReadLine();
+            if (input == null) return null;
+            int number;
+            if (!int.TryParse(input, out number) || number < 0 || number > teachers.Count) throw new ArgumentException("Неверный номер преподавателя.");
+            if (number == 0) return null;
+            return teachers[number - 1];
+        }
+        static Course ChooseCourse()
+        {
+            if (courses.Count == 0)
+            {
+                Console.WriteLine("Курсов пока нет.");
+                return null;
+            }
+            for (int i = 0; i < courses.Count; i++) Console.WriteLine((i + 1) + ". " + courses[i].Name);
+            Console.Write("Номер курса (0 - отмена): ");
+            string input = Console.ReadLine();
+            if (input == null) return null;
+            int number;
+            if (!int.TryParse(input, out number) || number < 0 || number > courses.Count) throw new ArgumentException("Неверный номер курса.");
+            if (number == 0) return null;
+            return courses[number - 1];
         }
     }
 }
