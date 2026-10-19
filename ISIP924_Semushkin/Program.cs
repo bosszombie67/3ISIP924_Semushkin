@@ -15,12 +15,9 @@ namespace ISIP924_Semushkin
         private List<Course> courses = new List<Course>();
         protected Person(string name, int age, string contact)
         {
-            if (string.IsNullOrWhiteSpace(name))
-                throw new ArgumentException("Имя не может быть пустым.");
-            if (age < 1 || age > 120)
-                throw new ArgumentException("Возраст должен быть от 1 до 120.");
-            if (string.IsNullOrWhiteSpace(contact))
-                throw new ArgumentException("Контакт не может быть пустым.");
+            if (string.IsNullOrWhiteSpace(name)) throw new ArgumentException("Имя не может быть пустым.");
+            if (age < 1 || age > 120) throw new ArgumentException("Возраст должен быть от 1 до 120.");
+            if (string.IsNullOrWhiteSpace(contact)) throw new ArgumentException("Контакт не может быть пустым.");
             Name = name.Trim();
             Age = age;
             Contact = contact.Trim();
@@ -41,7 +38,7 @@ namespace ISIP924_Semushkin
             foreach (Course course in courses) course.PrintInfo();
         }
     }
-    class Student : Person, IInformation
+    sealed class Student : Person, IInformation
     {
         public Student(string name, int age, string contact) : base(name, age, contact) { }
         public void PrintInfo()
@@ -50,7 +47,7 @@ namespace ISIP924_Semushkin
             PrintPersonInfo();
         }
     }
-    class Teacher : Person, IInformation
+    sealed class Teacher : Person, IInformation
     {
         public Teacher(string name, int age, string contact) : base(name, age, contact) { }
         public void PrintInfo()
@@ -66,10 +63,8 @@ namespace ISIP924_Semushkin
         private List<Student> students = new List<Student>();
         public Course(string name, Teacher teacher)
         {
-            if (string.IsNullOrWhiteSpace(name))
-                throw new ArgumentException("Название курса не может быть пустым.");
-            if (teacher == null)
-                throw new ArgumentException("Нужно выбрать преподавателя.");
+            if (string.IsNullOrWhiteSpace(name)) throw new ArgumentException("Название курса не может быть пустым.");
+            if (teacher == null) throw new ArgumentException("Нужно выбрать преподавателя.");
             Name = name.Trim();
             Teacher = teacher;
             teacher.AddCourse(this);
@@ -77,8 +72,7 @@ namespace ISIP924_Semushkin
         public void EnrollStudent(Student student)
         {
             if (student == null) throw new ArgumentException("Нужно выбрать студента.");
-            if (students.Contains(student))
-                throw new ArgumentException("Студент уже записан на этот курс.");
+            if (students.Contains(student)) throw new ArgumentException("Студент уже записан на этот курс.");
             students.Add(student);
             student.AddCourse(this);
         }
@@ -102,6 +96,7 @@ namespace ISIP924_Semushkin
             int choice = -1;
             while (choice != 0)
             {
+                Console.Clear();
                 Console.WriteLine();
                 Console.WriteLine("1 - Добавить студента");
                 Console.WriteLine("2 - Добавить преподавателя");
@@ -117,6 +112,7 @@ namespace ISIP924_Semushkin
                 Console.Write("Выберите действие: ");
                 string input = Console.ReadLine();
                 if (input == null) return;
+                Console.Clear();
                 if (!int.TryParse(input, out choice))
                 {
                     Console.WriteLine("Введите целое число.");
@@ -144,6 +140,12 @@ namespace ISIP924_Semushkin
                 catch (ArgumentException ex)
                 {
                     Console.WriteLine(ex.Message);
+                }
+                if (choice != 0)
+                {
+                    Console.WriteLine();
+                    Console.WriteLine("Нажмите любую клавишу для возврата в меню...");
+                    Console.ReadKey(true);
                 }
             }
         }
