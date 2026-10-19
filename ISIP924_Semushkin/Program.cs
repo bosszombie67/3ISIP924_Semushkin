@@ -50,6 +50,34 @@ namespace ISIP924_Semushkin
     }
     internal class Program
     {
+        static string Read(string text)
+        {
+            while (true)
+            {
+                Console.Write(text);
+                string? value = Console.ReadLine();
+                if (value == null) Environment.Exit(0);
+                if (!string.IsNullOrWhiteSpace(value)) return value.Trim();
+                Console.WriteLine("Введите непустое значение.");
+            }
+        }
+        static int Number(string text, int min, int max)
+        {
+            while (true)
+            {
+                if (int.TryParse(Read(text), out int n) && n >= min && n <= max) return n;
+                Console.WriteLine($"Введите целое число от {min} до {max}.");
+            }
+        }
+        static T? Show<T>(IEnumerable<T> source, bool choose = false) where T : class
+        {
+            var list = source.ToList();
+            if (list.Count == 0) { Console.WriteLine("Список пуст."); return null; }
+            for (int i = 0; i < list.Count; i++) Console.WriteLine($"{i + 1}. {list[i]}");
+            if (!choose) return null;
+            int n = Number("Номер (0 — отмена): ", 0, list.Count);
+            return n == 0 ? null : list[n - 1];
+        }
         static void Main(string[] args)
         {
 
