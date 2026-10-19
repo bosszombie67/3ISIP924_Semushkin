@@ -29,6 +29,25 @@ namespace ISIP924_Semushkin
         public Teacher(string name, int age, string contact) : base(name, age, contact) { }
         public override string ToString() => "Преподаватель: " + base.ToString();
     }
+    class Course
+    {
+        private readonly List<Student> students = new();
+        public string Name { get; }
+        public Teacher Teacher { get; }
+        public IReadOnlyCollection<Student> Students => students.AsReadOnly();
+        public Course(string name, Teacher teacher)
+        {
+            Name = name;
+            Teacher = teacher;
+        }
+        public bool Enroll(Student student)
+        {
+            if (students.Contains(student)) return false;
+            students.Add(student);
+            return true;
+        }
+        public override string ToString() => $"{Name}; преподаватель: {Teacher.Name}; студентов: {students.Count}";
+    }
     internal class Program
     {
         static void Main(string[] args)
