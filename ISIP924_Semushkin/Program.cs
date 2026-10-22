@@ -197,7 +197,10 @@ namespace ISIP924_Semushkin
         internal static void Run(Player player, Random random)
         {
             int turn = 0;
+            Console.Clear();
             Console.WriteLine("Мини-рогалик. На каждом десятом ходу вас ждёт босс.");
+            Console.WriteLine("Нажмите любую клавишу для продолжения...");
+            Console.ReadKey();
             while (player.HP > 0)
             {
                 Console.WriteLine();
@@ -206,7 +209,7 @@ namespace ISIP924_Semushkin
                 Console.WriteLine("0 - Выход");
                 string choice = Console.ReadLine();
                 if (choice == null || choice == "0") return;
-                if (choice == "2") { player.PrintInfo(); continue; }
+                if (choice == "2") { Console.Clear(); player.PrintInfo(); Console.ReadKey(); continue; }
                 if (choice != "1") { Console.WriteLine("Нет такого действия."); continue; }
                 turn++;
                 Console.WriteLine("Ход: " + turn);
@@ -220,6 +223,8 @@ namespace ISIP924_Semushkin
                     if (!OpenChest(player, random)) return;
                 }
                 else if (!Fight(player, CreateEnemy(false, random), random)) return;
+                Console.WriteLine("Нажмите любую клавишу для продолжения...");
+                Console.ReadKey();
             }
             Console.WriteLine("Вы погибли. Пройдено ходов: " + turn);
         }
@@ -264,12 +269,20 @@ namespace ISIP924_Semushkin
                     }
                 }
                 if (enemy.HP > 0) enemy.MakeAttack(player, defending, random);
+                if (player.HP > 0 && enemy.HP > 0)
+                {
+                    Console.WriteLine("Нажмите любую клавишу...");
+                    Console.ReadKey();
+                    Console.Clear();
+                    enemy.PrintInfo();
+                }
             }
             if (enemy.HP == 0) Console.WriteLine("Победа! " + enemy.Name + " повержен.");
             return true;
         }
         internal static bool OpenChest(Player player, Random random)
         {
+            Console.Clear();
             Console.WriteLine("Вы нашли сундук!");
             List<Item> loot = new List<Item>
             {
